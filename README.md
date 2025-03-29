@@ -1,9 +1,14 @@
 # Little Geeky's Learning Adventure
 
+
+
 <img width="600" alt="reading" src="https://github.com/user-attachments/assets/d956b3f9-8a38-493d-85bb-9f667493c854" />
 <img width="600" alt="math" src="https://github.com/user-attachments/assets/d70aa3e4-fc06-4671-8fa8-f8233b32ac35" />
 <img width="600" alt="typing" src="https://github.com/user-attachments/assets/de10815e-1cb6-4b9f-864a-a6d0a0ff27e1" />
 <img width="600" alt="image-creator" src="https://github.com/user-attachments/assets/851621d3-caae-4aff-ba1e-398fbb3095a1" />
+
+
+
 
 
 
