@@ -9,7 +9,8 @@
 <img width="577" alt="typing" src="https://github.com/user-attachments/assets/de10815e-1cb6-4b9f-864a-a6d0a0ff27e1" />
 
 
-<img width="600" alt="image-generator" src="https://github.com/user-attachments/assets/placeholder-for-image-generator" />
+
+<img width="1146" alt="Screenshot 2025-03-29 151128" src="https://github.com/user-attachments/assets/851621d3-caae-4aff-ba1e-398fbb3095a1" />
 
 
 
