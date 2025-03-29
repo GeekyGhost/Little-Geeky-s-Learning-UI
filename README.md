@@ -1,7 +1,5 @@
 # Little Geeky's Learning Adventure
 
-# WARNING - No NSFW filter currently for image generation. Planned, but not implemented yet. Attended Use expected for now. 
-
 <img width="772" alt="reading" src="https://github.com/user-attachments/assets/d956b3f9-8a38-493d-85bb-9f667493c854" />
 
 <img width="388" alt="math" src="https://github.com/user-attachments/assets/d70aa3e4-fc06-4671-8fa8-f8233b32ac35" />
@@ -10,8 +8,11 @@
 
 <img width="600" alt="image-generator" src="https://github.com/user-attachments/assets/placeholder-for-image-generator" />
 
-<img width="1146" alt="Screenshot 2025-03-29 151128" src="https://github.com/user-attachments/assets/197a3516-1f18-4299-a927-89d91017f991" />
-
+> ⚠️ **IMPORTANT SAFETY NOTICE** ⚠️
+> 
+> The Image Creator feature does not currently implement NSFW filtering. This feature is planned but not yet integrated.
+> Adult supervision is strongly recommended when children use the Image Creator.
+> This module is still in development - consider this a stable beta version that requires further safety enhancements.
 
 ## About
 
@@ -32,11 +33,14 @@ Developed as a passion project by a single developer, Little Geeky represents co
 
 The application now includes an Image Creator feature:
 
+> ⚠️ **Safety Notice**: Adult supervision required. No content filtering system is currently implemented.
+
 - **Create Images from Text**: Generate custom images based on text descriptions
 - **Customization Options**: Adjust settings like image size, generation steps, and guidance scale
 - **Style Templates**: Quick access to different artistic styles like Cartoon, Watercolor, 3D Render, and Pixel Art
 - **Image Saving**: Save your generated images to reuse in educational activities
 - **Transparent Background Option**: Create images with transparent backgrounds for use in other applications
+- **Safety Considerations**: This feature is in beta. Always supervise children during use, as content filtering is still in development
 
 ## Installation
 
@@ -203,12 +207,15 @@ Little Geeky features a tab-based interface with the following main areas:
 
 The Image Creator tab provides a creative environment where children can turn their ideas into images.
 
+> ⚠️ **SAFETY INFORMATION**: The current implementation does not include content filtering systems. Adult supervision is required. This feature is still in development and should be considered a beta version.
+
 **Features:**
 - **Text-to-Image Generation**: Create images from text descriptions
 - **Negative Prompt**: Specify elements to avoid in the generated image
 - **Generation Options**: Control image size, quality, and style
 - **Style Templates**: Quick selection of artistic styles
 - **Image Saving**: Save creations to the assets folder
+- **Safeguards**: While technical safety features are being developed, use child-friendly prompts and templates
 
 **How to Use:**
 1. Enter a description of the image you want to create in the text field
@@ -248,6 +255,7 @@ The Image Creator uses:
 - **LCM (Latent Consistency Model)**: For faster image generation
 - **Memory Optimization**: Techniques to improve performance on limited hardware
 - **Style Templates**: Pre-configured prompts for consistent artistic styles
+- **Safety Development Roadmap**: Content filtering and guardrails planned for future updates
 
 ### Voice Technology
 
@@ -283,11 +291,13 @@ The application incorporates research-backed educational approaches:
 
 Little Geeky's Learning Adventure is an ongoing project with plans for future enhancements:
 
-- Additional subject areas (Science, Social Studies)
-- More interactive exercises and games
-- Expanded accessibility features
-- Animation capabilities for generated images
-- Integration with additional educational resources
+- **Content Safety Filters**: Implementation of NSFW filtering for the Image Creator (high priority)
+- **Child-Safe Prompt Templates**: Pre-vetted prompt templates designed specifically for educational content
+- **Additional subject areas**: Science, Social Studies and more
+- **More interactive exercises and games**: Enhanced gamification elements
+- **Expanded accessibility features**: Making education inclusive for all learners
+- **Animation capabilities**: Bringing generated images to life with simple animations
+- **Integration with additional educational resources**: Expanding the knowledge base
 
 ## Licensing
 
