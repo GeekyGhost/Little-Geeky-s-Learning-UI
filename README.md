@@ -1,5 +1,7 @@
 # Little Geeky's Learning Adventure
 
+# WARNING - No NSFW filter currently for image generation. Planned, but not implemented yet. Attended Use expected for now. 
+
 <img width="772" alt="reading" src="https://github.com/user-attachments/assets/d956b3f9-8a38-493d-85bb-9f667493c854" />
 
 <img width="388" alt="math" src="https://github.com/user-attachments/assets/d70aa3e4-fc06-4671-8fa8-f8233b32ac35" />
