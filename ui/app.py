@@ -19,9 +19,11 @@ from ui.tabs.achievements_tab import AchievementsTab
 from ui.tabs.settings_tab import SettingsTab
 from config.settings import APP_TITLE, OLLAMA_API_URL
 from utils.settings_utils import SettingsManager
+from ui.tabs.image_tab import ImageTab
 
 class LittleGeekyApp:
     def __init__(self):
+        # Existing initializations
         self.ollama = OllamaClient()
         self.audio = AudioProcessor()
         self.recorder = VoiceRecorder()
@@ -36,6 +38,8 @@ class LittleGeekyApp:
         self.math_tab_handler = MathTab(self)
         self.achievements_tab_handler = AchievementsTab(self)
         self.settings_tab_handler = SettingsTab(self)
+        # Add the new image tab handler
+        self.image_tab_handler = ImageTab(self)
 
     async def get_models(self):
         """Get available models from Ollama API"""
@@ -98,6 +102,8 @@ class LittleGeekyApp:
                 reading_tab = self.reading_tab_handler.create_tab(None)
                 typing_tab = self.typing_tab_handler.create_tab(None)
                 math_tab = self.math_tab_handler.create_tab(None)
+                # Add the new image tab
+                image_tab = self.image_tab_handler.create_tab()
                 achievements_tab = self.achievements_tab_handler.create_tab()
                 settings_tab = self.settings_tab_handler.create_tab(None)
             
