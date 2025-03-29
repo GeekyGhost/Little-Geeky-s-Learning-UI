@@ -6,20 +6,32 @@
 
 <img width="577" alt="typing" src="https://github.com/user-attachments/assets/de10815e-1cb6-4b9f-864a-a6d0a0ff27e1" />
 
+<img width="600" alt="image-generator" src="https://github.com/user-attachments/assets/placeholder-for-image-generator" />
+
 ## About
 
 Little Geeky's Learning Adventure is an interactive educational platform designed to make learning engaging and fun for elementary school children (grades 1-6). This application combines cutting-edge AI technologies with research-backed educational methodologies to create a supportive, adaptive learning environment.
 
-Developed as a passion project by a single developer, Little Geeky represents countless hours of development, research, and testing to create a tool that can help children develop crucial skills in reading, mathematics, and typing.
+Developed as a passion project by a single developer, Little Geeky represents countless hours of development, research, and testing to create a tool that can help children develop crucial skills in reading, mathematics, typing, and now creative image generation.
 
 ## Features
 
 - **AI-Powered Learning**: Leverages local large language models (via Ollama) to provide personalized, contextually relevant educational content
-- **Multi-Modal Learning**: Supports text, audio, and image-based learning experiences
+- **Multi-Modal Learning**: Supports text, audio, image-based learning, and creative image generation experiences
 - **Voice Interaction**: High-quality text-to-speech capabilities bring content to life
 - **Achievement System**: Motivates learners with achievement tracking and progress visualization
 - **Customizable Experience**: Settings for voice, speed, theme, and more
-- **Educational Focus Areas**: Reading comprehension, mathematics, and typing skills
+- **Educational Focus Areas**: Reading comprehension, mathematics, typing skills, and creative image creation
+
+## New! Image Creator
+
+The application now includes an Image Creator feature:
+
+- **Create Images from Text**: Generate custom images based on text descriptions
+- **Customization Options**: Adjust settings like image size, generation steps, and guidance scale
+- **Style Templates**: Quick access to different artistic styles like Cartoon, Watercolor, 3D Render, and Pixel Art
+- **Image Saving**: Save your generated images to reuse in educational activities
+- **Transparent Background Option**: Create images with transparent backgrounds for use in other applications
 
 ## Installation
 
@@ -28,6 +40,7 @@ Developed as a passion project by a single developer, Little Geeky represents co
 - **Python 3.8+**: Required for the application's core functionality
 - **Ollama**: To run local LLMs (Large Language Models)
 - **Windows, macOS, or Linux**: Supported operating systems
+- **Stable Diffusion Models**: Required for the Image Creator feature
 
 ### Detailed Installation Steps
 
@@ -37,7 +50,6 @@ Little Geeky uses Ollama for AI capabilities. To install Ollama:
 
 - **Windows/macOS/Linux**: Download and install from [Ollama's official website](https://ollama.ai/download)
 - Once installed, run Ollama and keep it running in the background while using Little Geeky
-
 
 #### 2. Installing Little Geeky
 
@@ -112,7 +124,16 @@ For optimal performance, download these models in Ollama:
 
 2. Within Little Geeky, go to the Settings tab → Model Management to set up these models for different tasks
 
-#### 5. Directory Structure
+#### 5. Installing Stable Diffusion Models for Image Creator
+
+To use the Image Creator feature, you need to download Stable Diffusion models:
+
+1. Create a `Checkpoints` folder in the application directory if it doesn't already exist
+2. Download the GeekyGhost LCM model from [Civitai](https://civitai.com/models/476202/geekyghost-lcm)
+3. Place the downloaded model file in the `Checkpoints` folder
+4. The model will be automatically detected when you use the Image Creator tab
+
+#### 6. Directory Structure
 
 After installation, these directories will be created:
 
@@ -120,6 +141,8 @@ After installation, these directories will be created:
 - `logs/` - Contains application logs for troubleshooting
 - `models/` - Used for caching model information
 - `temp/` - Temporary files for document processing
+- `assets/images/` - Store generated images
+- `Checkpoints/` - Storage for Stable Diffusion models
 
 ### System Requirements
 
@@ -132,7 +155,7 @@ After installation, these directories will be created:
 - **Recommended** (for optimal performance):
   - CPU: Quad-core processor
   - RAM: 16GB or more
-  - GPU: NVIDIA GPU with CUDA support (for faster AI processing)
+  - GPU: NVIDIA GPU with CUDA support (for faster AI processing and image generation)
   - Storage: SSD with at least 20GB free space
 
 ### Troubleshooting
@@ -152,10 +175,10 @@ After installation, these directories will be created:
   - Ensure audio libraries are installed
   - Try switching to system voices in the settings
 
-- **Document processing issues**:
-  - Ensure PyMuPDF is properly installed
-  - Check if document is password protected
-  - Verify file format is supported (PDF, PNG, JPG)
+- **Image Creator doesn't work**:
+  - Verify you have models in the `Checkpoints` folder
+  - Check for GPU memory issues if you have a GPU
+  - Try lowering image dimensions or steps in the UI
 
 - **For log file access**:
   - Look in `logs/little_geeky.log` for detailed error messages
@@ -167,98 +190,36 @@ Little Geeky features a tab-based interface with the following main areas:
 - **Reading Tab**: For reading practice, document analysis, and comprehension
 - **Math Tab**: For mathematics exercises tailored to different grade levels
 - **Typing Tab**: For keyboard skills development and practice
+- **Image Creator Tab**: For generating custom images from text descriptions
 - **Achievements Tab**: For tracking learning progress and accomplishments
 - **Settings Tab**: For customizing the learning experience
 
-## Detailed Usage Guide
+## Image Creator Guide
 
-### Reading Tab
-
-The Reading Tab offers a comprehensive environment for children to practice and improve their reading skills.
+The Image Creator tab provides a creative environment where children can turn their ideas into images.
 
 **Features:**
-- **Document Upload**: Support for PDFs and images
-- **Text Processing**: Extract and format text from uploaded documents
-- **AI Analysis**: Generate summaries, explanations, or ask questions about texts
-- **Text-to-Speech**: Have text read aloud with adjustable voices and speeds
-- **Voice Recording**: Use your microphone to interact with the application
+- **Text-to-Image Generation**: Create images from text descriptions
+- **Negative Prompt**: Specify elements to avoid in the generated image
+- **Generation Options**: Control image size, quality, and style
+- **Style Templates**: Quick selection of artistic styles
+- **Image Saving**: Save creations to the assets folder
 
 **How to Use:**
-1. Upload documents using the file uploader or paste text directly
-2. Navigate between pages of uploaded documents using the Previous/Next buttons
-3. Type your request (e.g., "summarize this", "explain what this means") in the request field
-4. Click "Process Request" to generate AI responses
-5. Click "Read Aloud" to hear the text spoken with your selected voice
+1. Enter a description of the image you want to create in the text field
+2. Optionally, add negative prompts to avoid certain elements
+3. Select the generation speed (LCM for faster results, Standard for higher quality)
+4. Adjust steps, guidance scale, and dimensions as needed
+5. Choose a style template or customize settings in the Advanced section
+6. Click "Generate Image" to create your image
+7. Use "Save to Assets" to save your creation
 
-### Math Tab
-
-The Math Tab provides age-appropriate mathematics exercises and tools to develop numerical skills.
-
-**Features:**
-- **Personalized Math Problems**: Generate problems appropriate for grades 1-6
-- **Interactive Calculator**: Built-in calculator for practice and verification
-- **Voice Instructions**: Audio explanations of math problems
-- **Adaptive Difficulty**: Select different grade ranges (1-2, 3-4, 5-6)
-- **AI-Generated Word Problems**: Engaging, context-rich math scenarios
-
-**How to Use:**
-1. Select a type of math problem (addition, subtraction, multiplication, division)
-2. Choose your grade level
-3. Click "Get Problem!" to generate a new math exercise
-4. Use the calculator if needed
-5. Type your answer in the solution area
-6. Click "Check Answer" to verify your solution
-
-### Typing Tab
-
-The Typing Tab helps children develop their keyboard skills through engaging exercises.
-
-**Features:**
-- **Custom Typing Exercises**: Generate exercises based on interests and topics
-- **Difficulty Levels**: Easy, Medium, and Hard options
-- **Accuracy Tracking**: Detailed feedback on typing performance
-- **Voice Instructions**: Audio guidance for typing tasks
-- **Progress Tracking**: Monitor improvement over time
-
-**How to Use:**
-1. Enter a topic of interest (e.g., "dinosaurs", "space", "animals")
-2. Select a difficulty level
-3. Click "Get Exercise!" to generate a typing challenge
-4. Type the displayed text in the input area
-5. Click "Check My Typing!" to receive feedback on accuracy and speed
-
-### Achievements Tab
-
-The Achievements Tab visualizes learning progress and encourages continued engagement.
-
-**Features:**
-- **Achievement Badges**: Visual representations of accomplishments
-- **Progress Statistics**: Numerical tracking of completed exercises
-- **Learning Milestones**: Recognition of significant learning moments
-- **Daily Streaks**: Tracking of consistent usage
-
-**How to Use:**
-1. Login to track your progress
-2. View your earned achievements and locked achievements
-3. Check your statistics for each learning area
-4. Click "Refresh Achievements" to update after completing exercises
-
-### Settings Tab
-
-The Settings Tab allows customization of the application experience.
-
-**Features:**
-- **Global Settings**: Voice, speed, theme, and font size adjustments
-- **Model Management**: Configure AI models for different tasks
-- **Voice Customization**: Select from system voices or Kokoro TTS voices
-- **Theme Selection**: Choose from various visual themes including accessibility options
-- **Achievement Configuration**: Customize achievement parameters
-
-**How to Use:**
-1. Adjust global settings to your preferences
-2. Manage AI models for different tasks
-3. Configure achievement settings
-4. Apply changes and refresh settings as needed
+**Tips for Better Results:**
+- Be specific and detailed in your descriptions
+- Try different style templates for varied results
+- For better quality, increase the steps and guidance scale (with Standard mode)
+- For faster generation, use LCM mode with fewer steps
+- Use negative prompts to avoid unwanted elements
 
 ## Technical Details
 
@@ -271,8 +232,17 @@ The application leverages Ollama to run local LLMs, providing:
 - Math problem creation
 - Visual content analysis
 - Educational content adaptation
+- Image generation from text descriptions
 
 Models can be configured for different tasks in the Settings tab, allowing optimization for specific educational purposes.
+
+### Image Generation Technology
+
+The Image Creator uses:
+- **Stable Diffusion**: State-of-the-art text-to-image generation
+- **LCM (Latent Consistency Model)**: For faster image generation
+- **Memory Optimization**: Techniques to improve performance on limited hardware
+- **Style Templates**: Pre-configured prompts for consistent artistic styles
 
 ### Voice Technology
 
@@ -302,48 +272,7 @@ The application incorporates research-backed educational approaches:
 - Support for multiple learning styles (visual, auditory, kinesthetic)
 - Growth mindset encouragement
 - Positive reinforcement systems
-
-## Architecture Highlights
-
-Little Geeky's Learning Adventure demonstrates several noteworthy design patterns and techniques:
-
-### Modular Structure
-
-The application is organized into discrete components:
-- **UI Module**: Presentation and interaction (tabs, buttons, forms)
-- **Services Module**: External interactions (TTS, LLM, document processing)
-- **Models Module**: Data management (user progress, achievements)
-- **Utils Module**: Helper functions (text processing, file handling)
-
-### Performance Optimizations
-
-Several techniques improve application performance:
-- Voice data caching system for faster TTS
-- Efficient text chunking for large documents
-- Optimized audio processing pipeline
-- Lazy loading of resources
-
-### Error Resilience
-
-The application includes robust error handling:
-- Graceful fallbacks for unavailable services
-- Clear user feedback for issues
-- Logging system for troubleshooting
-- Resource cleanup to prevent leaks
-
-## Acknowledgements
-
-Little Geeky's Learning Adventure would not be possible without these amazing open-source projects:
-
-- **[Gradio](https://gradio.app/)**: For the powerful, easy-to-use UI framework
-- **[Kokoro TTS](https://github.com/mrtian/kokoro-tts)**: For the high-quality text-to-speech capabilities
-- **[Ollama](https://ollama.ai/)**: For enabling local LLM access
-- **[PyMuPDF](https://pymupdf.readthedocs.io/)**: For PDF processing capabilities
-- **[PyTorch](https://pytorch.org/)**: For the underlying ML infrastructure
-- **[pyttsx3](https://github.com/nateshmbhat/pyttsx3)**: For system voice access
-- **[SpeechRecognition](https://github.com/Uberi/speech_recognition)**: For voice input processing
-
-Special thanks to the broader open-source community and educational researchers whose work has informed the pedagogical approaches used in this application.
+- Creative expression through image generation
 
 ## Future Development
 
@@ -352,6 +281,7 @@ Little Geeky's Learning Adventure is an ongoing project with plans for future en
 - Additional subject areas (Science, Social Studies)
 - More interactive exercises and games
 - Expanded accessibility features
+- Animation capabilities for generated images
 - Integration with additional educational resources
 
 ## Licensing
