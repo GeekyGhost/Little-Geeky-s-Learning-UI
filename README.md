@@ -8,6 +8,9 @@
 
 <img width="600" alt="image-generator" src="https://github.com/user-attachments/assets/placeholder-for-image-generator" />
 
+<img width="1146" alt="Screenshot 2025-03-29 151128" src="https://github.com/user-attachments/assets/197a3516-1f18-4299-a927-89d91017f991" />
+
+
 ## About
 
 Little Geeky's Learning Adventure is an interactive educational platform designed to make learning engaging and fun for elementary school children (grades 1-6). This application combines cutting-edge AI technologies with research-backed educational methodologies to create a supportive, adaptive learning environment.
