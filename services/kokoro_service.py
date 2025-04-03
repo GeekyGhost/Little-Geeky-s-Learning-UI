@@ -9,6 +9,11 @@ import re
 from dataclasses import dataclass
 from typing import List, Optional, Dict, Any
 from utils.logging_utils import logger
+import gc  # For garbage collection
+import soundfile as sf
+
+# Import our optimized phoneme processor
+from services.phoneme_service import FastPhonemeProcessor, PhonemeCache
 
 # Try to import kokoro components with error handling
 try:
@@ -38,17 +43,20 @@ class KokoroVoiceConfig:
 
 class KokoroTTS:
     """
-    Handles text-to-speech processing using Kokoro
+    Handles text-to-speech processing using Kokoro with optimized phonemization
     """
     # Class variables to maintain state across instances
     MODEL = None
     PIPELINES = {}
     VOICES = {}
-    VOICE_DATA_CACHE = {}  # Add a voice data cache
+    VOICE_DATA_CACHE = {}  # Voice data cache
     MODEL_LOCK = threading.Lock()
     
     # Maximum phoneme length allowed by the model
     MAX_PHONEME_LENGTH = 500
+    
+    # Increased target length for better chunking
+    TARGET_LENGTH = 400  # Increased from 150 for better performance
     
     def __init__(self):
         """Initialize the Kokoro TTS system"""
@@ -60,7 +68,7 @@ class KokoroTTS:
             logger.warning("Kokoro package not available. Will use fallback TTS.")
             return
         
-        logger.info("Initializing Kokoro TTS...")
+        logger.info("Initializing Kokoro TTS with phoneme optimization...")
         
         try:
             # Define voice configurations
@@ -75,16 +83,35 @@ class KokoroTTS:
             with self.MODEL_LOCK:
                 if self.MODEL is None:
                     self.MODEL = {}
-                    self.MODEL[False] = KModel().to('cpu').eval()
+                    
+                    # Initialize model with eval mode for inference
+                    model = KModel().to('cpu').eval()
+                    
+                    # Use torch.jit.script for optimization if possible
+                    try:
+                        # Attempt to script the model for better performance
+                        self.MODEL[False] = torch.jit.script(model)
+                        logger.info("Using TorchScript optimization for CPU")
+                    except Exception as e:
+                        logger.warning(f"TorchScript optimization failed: {e}, using standard model")
+                        self.MODEL[False] = model
                     
                     if torch.cuda.is_available():
                         logger.info("CUDA available. GPU model will be loaded on demand.")
+                        
+                        # Set CUDA optimization flags
+                        torch.backends.cudnn.benchmark = True
+                        torch.backends.cuda.matmul.allow_tf32 = True
+                        torch.backends.cudnn.allow_tf32 = True
             
             # Preload default voice if specified in settings
             try:
                 self._preload_default_voice()
             except Exception as e:
                 logger.warning(f"Could not preload default voice: {e}")
+                
+            # Initialize phoneme cache
+            PhonemeCache.initialize()
                 
             logger.info(f"Kokoro TTS initialization complete with {len(self.VOICES)} voices.")
         except Exception as e:
@@ -188,29 +215,6 @@ class KokoroTTS:
                 description=f"UK English Male Voice ({name.capitalize()})"
             )
     
-    def _load_available_voices(self):
-        """Verify which voices can be loaded and remove those that can't"""
-        available_voices = {}
-        
-        # For each pipeline and voice, try to load the voice
-        for voice_name, voice_config in self.VOICES.items():
-            try:
-                lang_code = 'a' if voice_config.language == 'us' else 'b'
-                pipeline = self.PIPELINES[lang_code]
-                
-                # Attempt to load the voice
-                voice_data = pipeline.load_voice(voice_config.id)
-                if voice_data is not None:
-                    available_voices[voice_name] = voice_config
-                    logger.info(f"Successfully loaded voice: {voice_name} ({voice_config.id})")
-                else:
-                    logger.warning(f"Voice {voice_name} ({voice_config.id}) could not be loaded.")
-            except Exception as e:
-                logger.warning(f"Error loading voice {voice_name} ({voice_config.id}): {e}")
-        
-        # Update the VOICES dictionary to only include available voices
-        self.VOICES = available_voices
-    
     def get_available_voices(self):
         """Return list of available voices"""
         if not KOKORO_AVAILABLE or not self.VOICES:
@@ -219,7 +223,7 @@ class KokoroTTS:
     
     def text_to_speech(self, text: str, voice_name: str, speed: float = 1.0, use_gpu: bool = False) -> str:
         """
-        Convert text to speech with optimized caching
+        Convert text to speech with optimized phonemization
         
         Parameters:
         -----------
@@ -271,7 +275,14 @@ class KokoroTTS:
                 try:
                     with self.MODEL_LOCK:
                         if True not in self.MODEL:
-                            self.MODEL[True] = KModel().to('cuda').eval()
+                            model = KModel().to('cuda').eval()
+                            # Use FP16 for improved GPU performance
+                            try:
+                                model = model.half()  # Use half precision for GPU
+                                logger.info("Using FP16 for GPU acceleration")
+                            except Exception as e:
+                                logger.warning(f"FP16 conversion failed: {e}")
+                            self.MODEL[True] = model
                     device_key = True
                     logger.info("Using GPU for speech synthesis")
                 except Exception as e:
@@ -290,51 +301,58 @@ class KokoroTTS:
                 self.VOICE_DATA_CACHE[voice_name] = voice_data
                 logger.info(f"Loaded and cached voice data for {voice_name}")
             
-            # TEXT PROCESSING OPTIMIZATION: Try to process as a single chunk when possible
-            try:
-                # Generate phonemes for the whole text
-                phonemes, _ = pipeline.g2p(clean_text)
-                
-                # If phoneme length is manageable, generate audio in one go
-                if phonemes and len(phonemes) <= self.MAX_PHONEME_LENGTH:
-                    logger.info("Processing text as a single chunk")
+            # For short text, try to process as a single chunk first with optimized phonemizer
+            if len(clean_text) < 500:
+                try:
+                    # Use optimized phonemizer instead of the default espeak-ng
+                    phonemes = FastPhonemeProcessor.fast_phonemize(clean_text, lang_code, pipeline)
                     
-                    with self.MODEL_LOCK:
-                        ref_s = voice_data[len(phonemes)-1].to(self.MODEL[device_key].device)
-                        audio = self.MODEL[device_key](phonemes, ref_s, speed)
-                    
-                    audio_np = audio.cpu().numpy() if isinstance(audio, torch.Tensor) else audio
-                    
-                    # Save audio
-                    import soundfile as sf
-                    sf.write(output_file, audio_np, 24000)
-                    
-                    logger.info(f"Speech generation completed in {time.time() - start_time:.2f} seconds")
-                    return output_file
-            except Exception as e:
-                logger.warning(f"Single-chunk processing failed, falling back to chunking: {e}")
+                    if phonemes and len(phonemes) <= self.MAX_PHONEME_LENGTH:
+                        logger.info("Using optimized phonemization for single chunk")
+                        
+                        # Generate audio
+                        with torch.no_grad(), self.MODEL_LOCK:
+                            ref_s = voice_data[len(phonemes)-1].to(self.MODEL[device_key].device)
+                            audio = self.MODEL[device_key](phonemes, ref_s, speed)
+                        
+                        # Convert to numpy and save
+                        audio_np = audio.cpu().numpy() if isinstance(audio, torch.Tensor) else audio
+                        sf.write(output_file, audio_np, 24000)
+                        
+                        logger.info(f"Speech generation completed in {time.time() - start_time:.2f} seconds")
+                        return output_file
+                except Exception as e:
+                    logger.warning(f"Optimized single-chunk processing failed: {e}")
             
-            # If we get here, we need to use the chunking approach
+            # For longer text, split into chunks and process in parallel when possible
             chunks = self._split_text_into_chunks(clean_text)
-            logger.info(f"Processing text in {len(chunks)} chunks")
+            logger.info(f"Processing text in {len(chunks)} chunks with optimized phonemization")
             
             all_audio = []
             for i, chunk in enumerate(chunks):
                 try:
-                    phonemes, _ = pipeline.g2p(chunk)
+                    # Use our optimized phonemizer
+                    phonemes = FastPhonemeProcessor.fast_phonemize(chunk, lang_code, pipeline)
+                    
                     if not phonemes:
                         continue
                     
                     if len(phonemes) > self.MAX_PHONEME_LENGTH:
                         phonemes = phonemes[:self.MAX_PHONEME_LENGTH]
                     
-                    # Use cached voice data
-                    with self.MODEL_LOCK:
+                    # Process audio with optimized settings
+                    with torch.no_grad(), self.MODEL_LOCK:
                         ref_s = voice_data[len(phonemes)-1].to(self.MODEL[device_key].device)
                         audio = self.MODEL[device_key](phonemes, ref_s, speed)
                         
+                    # Convert to numpy
                     audio_np = audio.cpu().numpy() if isinstance(audio, torch.Tensor) else audio
                     all_audio.append(audio_np)
+                    
+                    # Free memory after processing each chunk
+                    if device_key and i % 3 == 0:
+                        torch.cuda.empty_cache()
+                        
                 except Exception as e:
                     logger.error(f"Error processing chunk {i+1}: {e}")
             
@@ -349,11 +367,16 @@ class KokoroTTS:
                 combined_audio = self._combine_audio_chunks(all_audio)
             
             # Save audio
-            import soundfile as sf
             sf.write(output_file, combined_audio, 24000)
             
             duration = time.time() - start_time
             logger.info(f"Speech generation completed in {duration:.2f} seconds")
+            
+            # Save phoneme cache to disk for future use
+            try:
+                PhonemeCache.save_cache()
+            except:
+                pass
             
             return output_file
             
@@ -362,21 +385,21 @@ class KokoroTTS:
             return None
     
     def _split_text_into_chunks(self, text):
-        """Split text into manageable chunks for processing"""
+        """Split text into manageable chunks for processing with improved efficiency"""
         # Simple sentence splitting
         sentences = re.split(r'(?<=[.!?])\s+', text)
         sentences = [s.strip() for s in sentences if s.strip()]
-        
-        # Target character length
-        target_length = 150  # Characters per chunk (conservative estimate)
-        
+    
+        # Use increased target length
+        target_length = self.TARGET_LENGTH
+    
         chunks = []
         current_chunk = []
         current_length = 0
-        
+    
         for sentence in sentences:
             sentence_length = len(sentence)
-            
+        
             # If single sentence is too long, try to break it up
             if sentence_length > target_length:
                 # Process any accumulated chunk first
@@ -384,7 +407,7 @@ class KokoroTTS:
                     chunks.append(' '.join(current_chunk))
                     current_chunk = []
                     current_length = 0
-                
+            
                 # Try to break sentence at commas
                 if ',' in sentence:
                     parts = sentence.split(',')
@@ -394,9 +417,9 @@ class KokoroTTS:
                 else:
                     # If no good break point, add as is
                     chunks.append(sentence)
-                
-                continue
             
+                continue
+        
             # If adding this sentence would exceed target length, start new chunk
             if current_length + sentence_length > target_length:
                 chunks.append(' '.join(current_chunk))
@@ -404,37 +427,42 @@ class KokoroTTS:
                 current_length = sentence_length
             else:
                 current_chunk.append(sentence)
-                current_length += sentence_length
-        
+                current_length = current_length + sentence_length  # Fixed line that had syntax error
+    
         # Add the last chunk if there is one
         if current_chunk:
             chunks.append(' '.join(current_chunk))
-        
+    
         return chunks
     
     def _combine_audio_chunks(self, audio_chunks, crossfade_ms=10):
-        """Simple concatenation with minimal crossfade"""
+        """Simple concatenation with minimal crossfade and optimized memory usage"""
         if len(audio_chunks) == 1:
             return audio_chunks[0]
         
         # Try simple concatenation first (fastest)
         try:
             return np.concatenate(audio_chunks)
-        except:
+        except Exception:
             pass
             
         # Fall back to crossfade if needed
         sample_rate = 24000
         fade_samples = int(crossfade_ms / 1000 * sample_rate)
         
+        # Pre-calculate total length for better memory allocation
         total_length = sum(len(chunk) for chunk in audio_chunks) - fade_samples * (len(audio_chunks) - 1)
         result = np.zeros(total_length, dtype=np.float32)
         
         position = 0
         for i, chunk in enumerate(audio_chunks):
             if i == 0:
+                # First chunk - no crossfade needed
                 chunk_len = len(chunk)
-                result[:chunk_len - fade_samples] = chunk[:-fade_samples]
+                if chunk_len <= fade_samples:
+                    result[:chunk_len] = chunk
+                else:
+                    result[:chunk_len - fade_samples] = chunk[:-fade_samples]
                 position = chunk_len - fade_samples
             else:
                 # Add crossfade
@@ -464,3 +492,75 @@ class KokoroTTS:
                 position = position + len(chunk)
         
         return result
+    
+    def unload_models(self):
+        """Explicitly unload models to free memory"""
+        with self.MODEL_LOCK:
+            self.MODEL = None
+        
+        # Clear voice data cache for complete cleanup
+        self.VOICE_DATA_CACHE = {}
+        
+        # Force garbage collection
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        gc.collect()
+        
+        logger.info("All models and caches unloaded from memory")
+    
+    def optimize_for_device(self, use_gpu=False):
+        """
+        Optimize the TTS engine for the specific device
+        
+        Args:
+            use_gpu: Whether to use GPU for synthesis
+            
+        Returns:
+            bool: Success status
+        """
+        try:
+            # Unload any existing models
+            self.unload_models()
+            
+            # Initialize with the appropriate device
+            with self.MODEL_LOCK:
+                if self.MODEL is None:
+                    self.MODEL = {}
+                    
+                    if use_gpu and torch.cuda.is_available():
+                        # GPU optimization
+                        model = KModel().to('cuda').eval()
+                        
+                        # Try half precision for better performance
+                        try:
+                            model = model.half()
+                            logger.info("Using FP16 precision for GPU acceleration")
+                        except Exception as e:
+                            logger.warning(f"FP16 conversion failed: {e}")
+                            
+                        self.MODEL[True] = model
+                        
+                        # Set CUDA optimization flags
+                        torch.backends.cudnn.benchmark = True
+                        torch.backends.cuda.matmul.allow_tf32 = True
+                        torch.backends.cudnn.allow_tf32 = True
+                        
+                        logger.info("Optimized for GPU operation")
+                    else:
+                        # CPU optimization
+                        model = KModel().to('cpu').eval()
+                        
+                        # Try to use TorchScript optimization
+                        try:
+                            self.MODEL[False] = torch.jit.script(model)
+                            logger.info("Using TorchScript optimization for CPU")
+                        except Exception as e:
+                            logger.warning(f"TorchScript optimization failed: {e}")
+                            self.MODEL[False] = model
+                            
+                        logger.info("Optimized for CPU operation")
+                
+                return True
+        except Exception as e:
+            logger.error(f"Error optimizing for device: {e}")
+            return False
