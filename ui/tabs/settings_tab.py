@@ -171,6 +171,7 @@ class SettingsTab:
                                     )
                                     
                                     save_task_models_btn = gr.Button("Save Task Models", variant="primary")
+                                    task_models_status = gr.Textbox(label="Status")
                         
                         # Model browser tab
                         with gr.Tab("Model Library"):
@@ -208,6 +209,8 @@ class SettingsTab:
                                 
                                 with gr.Column(scale=1):
                                     delete_btn = gr.Button("Delete", variant="secondary")
+                                    
+                            library_status = gr.Textbox(label="Status")
                         
                         # Modelfile editor tab - for EDITING existing models
                         with gr.Tab("Model Editor"):
@@ -288,378 +291,93 @@ class SettingsTab:
                                 create_model_status = gr.Textbox(label="Status")
                                 
                             # Helper function to generate template modelfiles based on selections
-                                def update_modelfile_template(name, base, template_type):
-                                    if not name or not base:
-                                        return "# Please fill in the model name and select a base model"
-                                    
-                                    # Add the model name as a comment
-                                    header = f"# NAME: {name}\nFROM {base}\n\n"
-                                    
-                                    if template_type == "Basic Customization":
-                                        return header + (
-                                            "# Basic model customization\n\n"
-                                            "# Set parameters\n"
-                                            "PARAMETER temperature 0.7\n"
-                                            "PARAMETER top_p 0.9\n"
-                                            "PARAMETER top_k 40\n\n"
-                                            "# Define system message\n"
-                                            "SYSTEM \"\"\"You are a helpful, respectful assistant designed to help children learn.\n"
-                                            "You explain concepts in simple language appropriate for young learners.\n"
-                                            "Your responses are educational, encouraging, and always appropriate for children.\"\"\"\n"
-                                        )
-                                    elif template_type == "Chat Assistant":
-                                        return header + (
-                                            "# Chat assistant template\n\n"
-                                            "# Set parameters for more creative responses\n"
-                                            "PARAMETER temperature 0.8\n"
-                                            "PARAMETER top_p 0.9\n\n"
-                                            "# Define a detailed system message for the assistant\n"
-                                            "SYSTEM \"\"\"You are Little Geeky, a friendly AI tutor designed to help children learn.\n"
-                                            "- You communicate at a level appropriate for elementary school students\n"
-                                            "- You're enthusiastic, supportive, and make learning fun\n"
-                                            "- You break down complex concepts into simple explanations\n"
-                                            "- You use examples and analogies that children can relate to\n"
-                                            "- You're patient and encouraging when students struggle\n"
-                                            "- You ask thoughtful questions to guide the learning process\n"
-                                            "- You celebrate achievements and progress\n"
-                                            "- You never use language that's inappropriate for children\"\"\"\n"
-                                        )
-                                    elif template_type == "RAG Template":
-                                        return header + (
-                                            "# RAG (Retrieval Augmented Generation) Template\n\n"
-                                            "# Set parameters for factual responses\n"
-                                            "PARAMETER temperature 0.3\n"
-                                            "PARAMETER top_p 0.95\n\n"
-                                            "# Define context window for processing\n"
-                                            "# You can customize the context window size based on your needs\n"
-                                            "# Define the system message for knowledge-based responses\n"
-                                            "SYSTEM \"\"\"You are a knowledgeable assistant designed to work with retrieved information.\n"
-                                            "When answering questions:\n"
-                                            "1. Base your answers primarily on the context information provided\n"
-                                            "2. If the context doesn't contain the answer, say you don't know\n"
-                                            "3. Don't make up information that isn't in the provided context\n"
-                                            "4. Keep your answers concise and focused on the information in the context\n"
-                                            "5. Explain concepts in a way that's easy for children to understand\"\"\"\n"
-                                        )
-                                    else:  # "Custom"
-                                        return header + (
-                                            "# Custom template - add your own customizations\n\n"
-                                            "# PARAMETER template 0.7\n"
-                                            "# PARAMETER top_p 0.9\n\n"
-                                            "# Define your SYSTEM prompt\n"
-                                            "SYSTEM \"\"\"Your custom system prompt goes here.\"\"\"\n\n"
-                                            "# For more options, see the Ollama documentation:\n"
-                                            "# https://github.com/ollama/ollama/blob/main/docs/modelfile.md\n"
-                                        )
+                            def update_modelfile_template(name, base, template_type):
+                                if not name or not base:
+                                    return "# Please fill in the model name and select a base model"
                                 
-                                # Wire up the template selector
-                                def update_template(name, base, template_type):
-                                    return update_modelfile_template(name, base, template_type)
+                                # Add the model name as a comment
+                                header = f"# NAME: {name}\nFROM {base}\n\n"
                                 
-                                # Update template when inputs change
-                                template_dropdown.change(
-                                    fn=update_template,
-                                    inputs=[new_model_name, base_model_dropdown, template_dropdown],
-                                    outputs=[new_modelfile_editor]
-                                )
-                                
-                                new_model_name.change(
-                                    fn=update_template,
-                                    inputs=[new_model_name, base_model_dropdown, template_dropdown],
-                                    outputs=[new_modelfile_editor]
-                                )
-                                
-                                base_model_dropdown.change(
-                                    fn=update_template,
-                                    inputs=[new_model_name, base_model_dropdown, template_dropdown],
-                                    outputs=[new_modelfile_editor]
-                                )
-                    
-                    # Status area for model operations
-                    model_status = gr.HTML("Ready")
-                    
-                    # Model management functions
-                    async def refresh_models():
-                        """Refresh the model list from Ollama API"""
-                        try:
-                            models = await self.app.get_models()
-                            model_info = await self._get_model_details(models)
+                                if template_type == "Basic Customization":
+                                    return header + (
+                                        "# Basic model customization\n\n"
+                                        "# Set parameters\n"
+                                        "PARAMETER temperature 0.7\n"
+                                        "PARAMETER top_p 0.9\n"
+                                        "PARAMETER top_k 40\n\n"
+                                        "# Define system message\n"
+                                        "SYSTEM \"\"\"You are a helpful, respectful assistant designed to help children learn.\n"
+                                        "You explain concepts in simple language appropriate for young learners.\n"
+                                        "Your responses are educational, encouraging, and always appropriate for children.\"\"\"\n"
+                                    )
+                                elif template_type == "Chat Assistant":
+                                    return header + (
+                                        "# Chat assistant template\n\n"
+                                        "# Set parameters for more creative responses\n"
+                                        "PARAMETER temperature 0.8\n"
+                                        "PARAMETER top_p 0.9\n\n"
+                                        "# Define a detailed system message for the assistant\n"
+                                        "SYSTEM \"\"\"You are Little Geeky, a friendly AI tutor designed to help children learn.\n"
+                                        "- You communicate at a level appropriate for elementary school students\n"
+                                        "- You're enthusiastic, supportive, and make learning fun\n"
+                                        "- You break down complex concepts into simple explanations\n"
+                                        "- You use examples and analogies that children can relate to\n"
+                                        "- You're patient and encouraging when students struggle\n"
+                                        "- You ask thoughtful questions to guide the learning process\n"
+                                        "- You celebrate achievements and progress\n"
+                                        "- You never use language that's inappropriate for children\"\"\"\n"
+                                    )
+                                elif template_type == "RAG Template":
+                                    return header + (
+                                        "# RAG (Retrieval Augmented Generation) Template\n\n"
+                                        "# Set parameters for factual responses\n"
+                                        "PARAMETER temperature 0.3\n"
+                                        "PARAMETER top_p 0.95\n\n"
+                                        "# Define context window for processing\n"
+                                        "# You can customize the context window size based on your needs\n"
+                                        "# Define the system message for knowledge-based responses\n"
+                                        "SYSTEM \"\"\"You are a knowledgeable assistant designed to work with retrieved information.\n"
+                                        "When answering questions:\n"
+                                        "1. Base your answers primarily on the context information provided\n"
+                                        "2. If the context doesn't contain the answer, say you don't know\n"
+                                        "3. Don't make up information that isn't in the provided context\n"
+                                        "4. Keep your answers concise and focused on the information in the context\n"
+                                        "5. Explain concepts in a way that's easy for children to understand\"\"\"\n"
+                                    )
+                                else:  # "Custom"
+                                    return header + (
+                                        "# Custom template - add your own customizations\n\n"
+                                        "# PARAMETER template 0.7\n"
+                                        "# PARAMETER top_p 0.9\n\n"
+                                        "# Define your SYSTEM prompt\n"
+                                        "SYSTEM \"\"\"Your custom system prompt goes here.\"\"\"\n\n"
+                                        "# For more options, see the Ollama documentation:\n"
+                                        "# https://github.com/ollama/ollama/blob/main/docs/modelfile.md\n"
+                                    )
                             
-                            # Update task model dropdowns
-                            return (
-                                gr.Dropdown(choices=models),
-                                gr.Dropdown(choices=self._get_multimodal_models(models)),
-                                gr.Dropdown(choices=self._get_embedding_models(models)),
-                                gr.Dropdown(choices=models),
-                                gr.Dropdown(choices=models),
-                                gr.Dropdown(choices=models),
-                                model_info,
-                                "Models refreshed successfully ✅"
-                            )
-                        except Exception as e:
-                            logger.error(f"Error refreshing models: {e}")
-                            return (
-                                text_model, vision_model, embedding_model, model_to_delete,
-                                modelfile_dropdown, base_model_dropdown,
-                                model_table.value,
-                                f"Error refreshing models: {str(e)}"
-                            )
-                    
-                    refresh_models_btn.click(
-                        fn=refresh_models,
-                        outputs=[
-                            text_model, vision_model, embedding_model, model_to_delete,
-                            modelfile_dropdown, base_model_dropdown,
-                            model_table, model_status
-                        ]
-                    )
-                    
-                    def open_library():
-                        """Open the Ollama model library in a browser"""
-                        webbrowser.open("https://ollama.com/library")
-                        return "Opened model library in browser"
-                    
-                    library_btn.click(
-                        fn=open_library,
-                        outputs=[model_status]
-                    )
-                    
-                    async def download_model(model_name):
-                        """Download a model from Ollama library"""
-                        try:
-                            if await self.app.model_manager.download_model(model_name):
-                                models = await self.app.get_models()
-                                model_info = await self._get_model_details(models)
-                                
-                                return (
-                                    gr.Dropdown(choices=models),
-                                    gr.Dropdown(choices=self._get_multimodal_models(models)),
-                                    gr.Dropdown(choices=self._get_embedding_models(models)),
-                                    gr.Dropdown(choices=models),
-                                    gr.Dropdown(choices=models),
-                                    gr.Dropdown(choices=models),
-                                    model_info,
-                                    f"Model {model_name} downloaded successfully! ✅"
-                                )
-                            return (
-                                text_model, vision_model, embedding_model, model_to_delete,
-                                modelfile_dropdown, base_model_dropdown,
-                                model_table.value,
-                                f"Failed to download model {model_name} ❌"
-                            )
-                        except Exception as e:
-                            logger.error(f"Error downloading model: {e}")
-                            return (
-                                text_model, vision_model, embedding_model, model_to_delete,
-                                modelfile_dropdown, base_model_dropdown,
-                                model_table.value,
-                                f"Error: {str(e)}"
-                            )
-                    
-                    download_btn.click(
-                        fn=download_model,
-                        inputs=[model_name_download],
-                        outputs=[
-                            text_model, vision_model, embedding_model, model_to_delete,
-                            modelfile_dropdown, base_model_dropdown,
-                            model_table, model_status
-                        ]
-                    )
-                    
-                    async def delete_model(model_name):
-                        """Delete a model from Ollama"""
-                        try:
-                            # Use Ollama API to delete the model
-                            async with aiohttp.ClientSession() as session:
-                                async with session.delete(
-                                    f"{OLLAMA_API_URL}/delete",
-                                    json={"model": model_name}
-                                ) as response:
-                                    if response.status == 200:
-                                        # Refresh model lists after deletion
-                                        models = await self.app.get_models()
-                                        model_info = await self._get_model_details(models)
-                                        
-                                        return (
-                                            gr.Dropdown(choices=models),
-                                            gr.Dropdown(choices=self._get_multimodal_models(models)),
-                                            gr.Dropdown(choices=self._get_embedding_models(models)),
-                                            gr.Dropdown(choices=models),
-                                            gr.Dropdown(choices=models),
-                                            gr.Dropdown(choices=models),
-                                            model_info,
-                                            f"Model {model_name} deleted successfully! ✅"
-                                        )
-                                    else:
-                                        error_text = await response.text()
-                                        return (
-                                            text_model, vision_model, embedding_model, model_to_delete,
-                                            modelfile_dropdown, base_model_dropdown,
-                                            model_table.value,
-                                            f"Failed to delete model: {error_text} ❌"
-                                        )
-                        except Exception as e:
-                            logger.error(f"Error deleting model: {e}")
-                            return (
-                                text_model, vision_model, embedding_model, model_to_delete,
-                                modelfile_dropdown, base_model_dropdown,
-                                model_table.value,
-                                f"Error: {str(e)}"
-                            )
-                    
-                    delete_btn.click(
-                        fn=delete_model,
-                        inputs=[model_to_delete],
-                        outputs=[
-                            text_model, vision_model, embedding_model, model_to_delete,
-                            modelfile_dropdown, base_model_dropdown,
-                            model_table, model_status
-                        ]
-                    )
-                    
-                    async def load_modelfile(model_name):
-                        """Load a modelfile for the selected model"""
-                        try:
-                            if not model_name:
-                                return "Please select a model"
+                            # Wire up the template selector
+                            def update_template(name, base, template_type):
+                                return update_modelfile_template(name, base, template_type)
                             
-                            # Use Ollama API to get model info
-                            async with aiohttp.ClientSession() as session:
-                                async with session.post(
-                                    f"{OLLAMA_API_URL}/show",
-                                    json={"model": model_name}
-                                ) as response:
-                                    if response.status == 200:
-                                        data = await response.json()
-                                        modelfile_content = data.get("modelfile", "# No modelfile content available")
-                                        return modelfile_content, "Modelfile loaded successfully ✅"
-                                    else:
-                                        error_text = await response.text()
-                                        return "", f"Failed to load modelfile: {error_text} ❌"
-                        except Exception as e:
-                            logger.error(f"Error loading modelfile: {e}")
-                            return "", f"Error: {str(e)}"
-                    
-                    modelfile_dropdown.change(
-                        fn=load_modelfile,
-                        inputs=[modelfile_dropdown],
-                        outputs=[modelfile_editor, modelfile_status]
-                    )
-                    
-                    async def save_task_models(text_model, vision_model, embedding_model):
-                        """Save task-specific model selections"""
-                        try:
-                            settings = {
-                                "text_model": text_model,
-                                "vision_model": vision_model,
-                                "embedding_model": embedding_model
-                            }
-                            
-                            if SettingsManager.save_task_models(settings):
-                                return "Task models saved successfully! ✅"
-                            else:
-                                return "Error saving task models. Check logs for details."
-                        except Exception as e:
-                            logger.error(f"Error saving task models: {e}")
-                            return f"Error saving task models: {str(e)}"
-                    
-                    save_task_models_btn.click(
-                        fn=save_task_models,
-                        inputs=[text_model, vision_model, embedding_model],
-                        outputs=[model_status]
-                    )
-                    
-                    async def save_modelfile(model_name, modelfile_content):
-                        """Save modified modelfile for an existing model"""
-                        try:
-                            if not model_name:
-                                return "Error: No model selected"
-                            
-                            # Save modelfile to a temporary file
-                            import tempfile
-                            temp_dir = tempfile.mkdtemp()
-                            modelfile_path = os.path.join(temp_dir, "Modelfile")
-                            
-                            with open(modelfile_path, "w") as f:
-                                f.write(modelfile_content)
-                            
-                            # Use Ollama CLI to update the model
-                            import subprocess
-                            process = await asyncio.create_subprocess_exec(
-                                "ollama", "create", model_name, "-f", modelfile_path,
-                                stdout=asyncio.subprocess.PIPE,
-                                stderr=asyncio.subprocess.PIPE
+                            # Update template when inputs change
+                            template_dropdown.change(
+                                fn=update_template,
+                                inputs=[new_model_name, base_model_dropdown, template_dropdown],
+                                outputs=[new_modelfile_editor]
                             )
                             
-                            stdout, stderr = await process.communicate()
-                            
-                            # Clean up temporary file
-                            import shutil
-                            shutil.rmtree(temp_dir)
-                            
-                            if process.returncode != 0:
-                                return f"Error updating model: {stderr.decode()}"
-                            
-                            return f"Model {model_name} updated successfully! ✅"
-                        except Exception as e:
-                            logger.error(f"Error saving modelfile: {e}")
-                            return f"Error: {str(e)}"
-                    
-                    save_modelfile_btn.click(
-                        fn=save_modelfile,
-                        inputs=[modelfile_dropdown, modelfile_editor],
-                        outputs=[modelfile_status]
-                    )
-                    
-                    async def create_new_model(model_name, modelfile_content):
-                        """Create a new model from modelfile content"""
-                        try:
-                            if not model_name:
-                                return "Error: Please provide a name for the new model"
-                            
-                            # Check if the FROM line exists in the modelfile
-                            if "FROM" not in modelfile_content:
-                                return "Error: Modelfile must contain a FROM line with a base model name"
-                            
-                            # Save modelfile to a temporary file
-                            import tempfile
-                            temp_dir = tempfile.mkdtemp()
-                            modelfile_path = os.path.join(temp_dir, "Modelfile")
-                            
-                            with open(modelfile_path, "w") as f:
-                                f.write(modelfile_content)
-                            
-                            # Use Ollama CLI to create the model
-                            import subprocess
-                            process = await asyncio.create_subprocess_exec(
-                                "ollama", "create", model_name, "-f", modelfile_path,
-                                stdout=asyncio.subprocess.PIPE,
-                                stderr=asyncio.subprocess.PIPE
+                            new_model_name.change(
+                                fn=update_template,
+                                inputs=[new_model_name, base_model_dropdown, template_dropdown],
+                                outputs=[new_modelfile_editor]
                             )
                             
-                            stdout, stderr = await process.communicate()
-                            
-                            # Clean up temporary file
-                            import shutil
-                            shutil.rmtree(temp_dir)
-                            
-                            if process.returncode != 0:
-                                return f"Error creating model: {stderr.decode()}"
-                            
-                            # Refresh models after creation
-                            models = await self.app.get_models()
-                            
-                            return f"Model {model_name} created successfully! ✅"
-                        except Exception as e:
-                            logger.error(f"Error creating model: {e}")
-                            return f"Error: {str(e)}"
+                            base_model_dropdown.change(
+                                fn=update_template,
+                                inputs=[new_model_name, base_model_dropdown, template_dropdown],
+                                outputs=[new_modelfile_editor]
+                            )
                     
-                    create_model_btn.click(
-                        fn=create_new_model,
-                        inputs=[new_model_name, new_modelfile_editor],
-                        outputs=[create_model_status]
-                    )
-                
                 # Achievement Settings Section
                 with gr.Tab("Achievement Settings"):
                     gr.Markdown("## Achievement Settings")
@@ -678,7 +396,7 @@ class SettingsTab:
                     with gr.Row():
                         save_achievements_btn = gr.Button("Save Achievement Settings", variant="primary")
                         reset_achievements_btn = gr.Button("Reset to Defaults", variant="secondary")
-                        status_text = gr.HTML("Ready")
+                        achievements_status = gr.HTML("Ready")
                         
                     def save_achievements(data):
                         """Save achievement configurations"""
@@ -699,7 +417,7 @@ class SettingsTab:
                     save_achievements_btn.click(
                         fn=save_achievements,
                         inputs=[achievements_table],
-                        outputs=[status_text]
+                        outputs=[achievements_status]
                     )
                     
                     reset_achievements_btn.click(
@@ -711,29 +429,344 @@ class SettingsTab:
             with gr.Row():
                 refresh_all_btn = gr.Button("Refresh All Settings", variant="primary", scale=2)
                 status_all = gr.HTML("Ready")
-                
-            async def refresh_all_settings():
+            
+            # === FIXED MODEL MANAGEMENT FUNCTIONS ===
+            
+            # Function to get models without updating UI components
+            async def get_models_only():
+                """Get models without updating UI"""
                 try:
-                    # Refresh models
                     models = await self.app.get_models()
-                    model_info = await self._get_model_details(models)
+                    return models
+                except Exception as e:
+                    logger.error(f"Error getting models: {e}")
+                    return ["Error getting models"]
+
+            # FIX: Simple refresh handler defined in local scope
+            async def handle_refresh():
+                """Simple direct refresh function"""
+                try:
+                    # Get fresh models directly
+                    models = await get_models_only()
                     
-                    # Update all dropdowns
-                    text_model.choices = models
-                    vision_model.choices = self._get_multimodal_models(models)
-                    embedding_model.choices = self._get_embedding_models(models)
-                    model_to_delete.choices = models
-                    modelfile_dropdown.choices = models
-                    base_model_dropdown.choices = models
-                    model_table.value = model_info
+                    # Create updated model details
+                    model_details = []
+                    for model_name in models:
+                        if model_name not in ["No models found 😕", "Please check if Ollama is running 🤔"]:
+                            model_details.append([
+                                model_name, 
+                                "Ready",
+                                "Ready",
+                                "Ready", 
+                                "Ready"
+                            ])
                     
-                    # Refresh achievements
-                    achievements_table.value = self._load_achievements()
+                    # Update filtered lists
+                    multimodal_models = self._get_multimodal_models(models)
+                    embedding_models = self._get_embedding_models(models)
                     
-                    return "<span style='color:green'>All settings refreshed successfully! ✅</span>"
+                    message = f"Models refreshed successfully! Found {len(models)} models."
+                    
+                    # Return updated values
+                    return message, model_details, gr.update(choices=models), gr.update(choices=multimodal_models), gr.update(choices=embedding_models), gr.update(choices=models), gr.update(choices=models), gr.update(choices=models)
+                except Exception as e:
+                    logger.error(f"Error in refresh handler: {e}")
+                    return f"Error refreshing models: {str(e)}", [], gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update()
+
+            # Simplified download function
+            async def download_model(model_name):
+                """Download a model without automatically updating UI"""
+                if not model_name:
+                    return "Please enter a model name to download"
+                
+                try:
+                    # Use Ollama CLI to download model
+                    process = await asyncio.create_subprocess_exec(
+                        "ollama", "pull", model_name,
+                        stdout=asyncio.subprocess.PIPE,
+                        stderr=asyncio.subprocess.PIPE
+                    )
+                    stdout, stderr = await process.communicate()
+                    
+                    if process.returncode == 0:
+                        return f"Model {model_name} downloaded successfully! Use Refresh to update the model list."
+                    else:
+                        return f"Failed to download model: {stderr.decode()}"
+                except Exception as e:
+                    logger.error(f"Error downloading model: {e}")
+                    return f"Error downloading model: {str(e)}"
+            
+            # Simplified delete function
+            async def delete_model(model_name):
+                """Delete a model without automatically updating UI"""
+                if not model_name:
+                    return "Please select a model to delete"
+                
+                try:
+                    # Use Ollama API to delete model
+                    async with aiohttp.ClientSession() as session:
+                        async with session.delete(
+                            f"{OLLAMA_API_URL}/delete",
+                            json={"model": model_name}
+                        ) as response:
+                            if response.status == 200:
+                                return f"Model {model_name} deleted successfully! Use Refresh to update the model list."
+                            else:
+                                error_text = await response.text()
+                                return f"Failed to delete model: {error_text}"
+                except Exception as e:
+                    logger.error(f"Error deleting model: {e}")
+                    return f"Error deleting model: {str(e)}"
+            
+            # Load modelfile content
+            async def load_modelfile(model_name):
+                """Load a modelfile without updating other components"""
+                if not model_name:
+                    return "", "Please select a model"
+                
+                try:
+                    # Use Ollama API to get model info
+                    async with aiohttp.ClientSession() as session:
+                        async with session.post(
+                            f"{OLLAMA_API_URL}/show",
+                            json={"model": model_name}
+                        ) as response:
+                            if response.status == 200:
+                                data = await response.json()
+                                modelfile_content = data.get("modelfile", "# No modelfile content available")
+                                return modelfile_content, "Modelfile loaded successfully"
+                            else:
+                                error_text = await response.text()
+                                return "", f"Failed to load modelfile: {error_text}"
+                except Exception as e:
+                    logger.error(f"Error loading modelfile: {e}")
+                    return "", f"Error loading modelfile: {str(e)}"
+            
+            # Save modelfile
+            async def save_modelfile(model_name, modelfile_content):
+                """Save modelfile without updating UI components"""
+                if not model_name or not modelfile_content:
+                    return "Model name and modelfile content are required"
+                
+                try:
+                    # Write modelfile to temp file
+                    import tempfile
+                    temp_dir = tempfile.mkdtemp()
+                    modelfile_path = os.path.join(temp_dir, "Modelfile")
+                    
+                    with open(modelfile_path, "w") as f:
+                        f.write(modelfile_content)
+                    
+                    # Use Ollama CLI to update model
+                    process = await asyncio.create_subprocess_exec(
+                        "ollama", "create", model_name, "-f", modelfile_path,
+                        stdout=asyncio.subprocess.PIPE,
+                        stderr=asyncio.subprocess.PIPE
+                    )
+                    stdout, stderr = await process.communicate()
+                    
+                    # Clean up temp file
+                    import shutil
+                    shutil.rmtree(temp_dir)
+                    
+                    if process.returncode == 0:
+                        return f"Model {model_name} updated successfully!"
+                    else:
+                        return f"Error updating model: {stderr.decode()}"
+                except Exception as e:
+                    logger.error(f"Error saving modelfile: {e}")
+                    return f"Error saving modelfile: {str(e)}"
+            
+            # Create new model
+            async def create_new_model(model_name, modelfile_content):
+                """Create a new model without updating UI components"""
+                if not model_name or not modelfile_content:
+                    return "Model name and modelfile content are required"
+                
+                try:
+                    # Write modelfile to temp file
+                    import tempfile
+                    temp_dir = tempfile.mkdtemp()
+                    modelfile_path = os.path.join(temp_dir, "Modelfile")
+                    
+                    with open(modelfile_path, "w") as f:
+                        f.write(modelfile_content)
+                    
+                    # Use Ollama CLI to create model
+                    process = await asyncio.create_subprocess_exec(
+                        "ollama", "create", model_name, "-f", modelfile_path,
+                        stdout=asyncio.subprocess.PIPE,
+                        stderr=asyncio.subprocess.PIPE
+                    )
+                    stdout, stderr = await process.communicate()
+                    
+                    # Clean up temp file
+                    import shutil
+                    shutil.rmtree(temp_dir)
+                    
+                    if process.returncode == 0:
+                        return f"Model {model_name} created successfully! Use Refresh to update the model list."
+                    else:
+                        return f"Error creating model: {stderr.decode()}"
+                except Exception as e:
+                    logger.error(f"Error creating model: {e}")
+                    return f"Error creating model: {str(e)}"
+            
+            # Save task models
+            async def save_task_models(text_model, vision_model, embedding_model):
+                """Save task models configuration"""
+                try:
+                    settings = {
+                        "text_model": text_model,
+                        "vision_model": vision_model,
+                        "embedding_model": embedding_model
+                    }
+                    
+                    if SettingsManager.save_task_models(settings):
+                        return "Task models saved successfully!"
+                    else:
+                        return "Error saving task models. Check logs for details."
+                except Exception as e:
+                    logger.error(f"Error saving task models: {e}")
+                    return f"Error saving task models: {str(e)}"
+            
+            # Browser launch function
+            def open_ollama_library():
+                """Open Ollama library in browser"""
+                try:
+                    webbrowser.open("https://ollama.com/library")
+                    return "Opened Ollama model library in browser"
+                except Exception as e:
+                    logger.error(f"Error opening browser: {e}")
+                    return f"Error opening browser: {str(e)}"
+            
+            # Refresh all settings - FIXED VERSION
+            async def refresh_all_settings():
+                """Refresh all components"""
+                try:
+                    # Update model components using the handle_refresh function
+                    refresh_result = await handle_refresh()
+                    
+                    # Apply the model updates with proper handling for update objects
+                    library_status.update(value=refresh_result[0])
+                    model_table.update(value=refresh_result[1])
+                    
+                    # The issue is in these lines - we need to handle different Gradio versions
+                    # Check if we have gr.update objects or direct choice lists
+                    def safe_update_dropdown(dropdown, choices_data):
+                        try:
+                            # Direct update approach for Gradio 3.41.0
+                            if isinstance(choices_data, dict) and 'choices' in choices_data:
+                                # Handle gr.update() return value
+                                dropdown.update(choices=choices_data['choices'])
+                            elif hasattr(choices_data, 'choices'):
+                                # Handle objects with choices attribute  
+                                dropdown.update(choices=choices_data.choices)
+                            else:
+                                # Fall back to direct update for lists or other formats
+                                dropdown.update(choices=choices_data)
+                        except Exception as e:
+                            # Log the specific error for debugging
+                            logger.error(f"Error updating dropdown: {e}")
+                            import traceback
+                            logger.error(traceback.format_exc())
+                    
+                    # Update all dropdowns safely
+                    try:
+                        safe_update_dropdown(text_model, refresh_result[2])
+                    except Exception as e:
+                        logger.error(f"Error updating text_model: {e}")
+                        
+                    try:
+                        safe_update_dropdown(vision_model, refresh_result[3])
+                    except Exception as e:
+                        logger.error(f"Error updating vision_model: {e}")
+                        
+                    try:
+                        safe_update_dropdown(embedding_model, refresh_result[4])
+                    except Exception as e:
+                        logger.error(f"Error updating embedding_model: {e}")
+                        
+                    try:
+                        safe_update_dropdown(model_to_delete, refresh_result[5])
+                    except Exception as e:
+                        logger.error(f"Error updating model_to_delete: {e}")
+                        
+                    try:
+                        safe_update_dropdown(modelfile_dropdown, refresh_result[6])
+                    except Exception as e:
+                        logger.error(f"Error updating modelfile_dropdown: {e}")
+                        
+                    try:
+                        safe_update_dropdown(base_model_dropdown, refresh_result[7])
+                    except Exception as e:
+                        logger.error(f"Error updating base_model_dropdown: {e}")
+                    
+                    # Refresh achievements table
+                    achievements_table.update(value=self._load_achievements())
+                    
+                    return "<span style='color:green'>All settings refreshed successfully!</span>"
                 except Exception as e:
                     logger.error(f"Error refreshing all settings: {e}")
+                    import traceback
+                    logger.error(traceback.format_exc())
                     return f"<span style='color:red'>Error refreshing settings: {str(e)}</span>"
+            
+            # FIX: Wire up refresh_models_btn with local handler function
+            refresh_models_btn.click(
+                fn=handle_refresh,
+                outputs=[
+                    library_status, 
+                    model_table, 
+                    text_model, 
+                    vision_model, 
+                    embedding_model, 
+                    model_to_delete, 
+                    modelfile_dropdown, 
+                    base_model_dropdown
+                ]
+            )
+            
+            library_btn.click(
+                fn=open_ollama_library,
+                outputs=[library_status]
+            )
+            
+            download_btn.click(
+                fn=download_model,
+                inputs=[model_name_download],
+                outputs=[library_status]
+            )
+            
+            delete_btn.click(
+                fn=delete_model,
+                inputs=[model_to_delete],
+                outputs=[library_status]
+            )
+            
+            modelfile_dropdown.change(
+                fn=load_modelfile,
+                inputs=[modelfile_dropdown],
+                outputs=[modelfile_editor, modelfile_status]
+            )
+            
+            save_modelfile_btn.click(
+                fn=save_modelfile,
+                inputs=[modelfile_dropdown, modelfile_editor],
+                outputs=[modelfile_status]
+            )
+            
+            create_model_btn.click(
+                fn=create_new_model,
+                inputs=[new_model_name, new_modelfile_editor],
+                outputs=[create_model_status]
+            )
+            
+            save_task_models_btn.click(
+                fn=save_task_models,
+                inputs=[text_model, vision_model, embedding_model],
+                outputs=[task_models_status]
+            )
             
             refresh_all_btn.click(
                 fn=refresh_all_settings,
@@ -857,10 +890,10 @@ class SettingsTab:
                 
                 model_details.append([
                     model_name,
-                    "Loading...",
-                    "Loading...",
-                    "Loading...",
-                    "Loading..."
+                    "Ready",  # Changed from "Loading..." to "Ready"
+                    "Ready",  # Changed from "Loading..." to "Ready"
+                    "Ready",  # Changed from "Loading..." to "Ready"
+                    "Ready"   # Changed from "Loading..." to "Ready"
                 ])
             return model_details
         except Exception as e:
