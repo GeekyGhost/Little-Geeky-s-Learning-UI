@@ -111,6 +111,138 @@ Little Geeky uses Ollama for AI capabilities. To install Ollama:
    python main.py
    ```
 
+### New Additional Install Instructions
+
+## GPU Acceleration Setup
+
+Little Geeky's Learning Adventure can leverage GPU acceleration to significantly improve performance, especially for the Image Creator feature. This section provides detailed instructions for setting up CUDA and ONNX Runtime support.
+
+### CUDA Setup for NVIDIA GPUs
+
+To enable GPU acceleration with NVIDIA graphics cards:
+
+#### Windows
+
+1. **Check GPU Compatibility**:
+   - Ensure you have a CUDA-capable NVIDIA GPU (GTX 1000 series or newer recommended)
+   - Check your GPU model with: `nvidia-smi` in Command Prompt
+
+2. **Install CUDA Toolkit**:
+   - Download the CUDA Toolkit 11.8 or 12.1 from [NVIDIA's website](https://developer.nvidia.com/cuda-downloads)
+   - Follow the installation wizard (Express Installation recommended)
+   - Restart your computer after installation
+
+3. **Install PyTorch with CUDA support**:
+   ```
+   # For CUDA 11.8
+   pip install torch==2.1.0+cu118 torchvision==0.16.0+cu118 --index-url https://download.pytorch.org/whl/cu118
+   
+   # For CUDA 12.1
+   pip install torch==2.1.0+cu121 torchvision==0.16.0+cu121 --index-url https://download.pytorch.org/whl/cu121
+   ```
+
+#### Linux/Ubuntu
+
+1. **Check GPU Compatibility**:
+   ```
+   nvidia-smi
+   ```
+
+2. **Install CUDA Dependencies**:
+   ```
+   sudo apt-get update
+   sudo apt-get install -y build-essential
+   sudo apt-get install -y nvidia-cuda-toolkit
+   ```
+
+3. **Install PyTorch with CUDA support**:
+   ```
+   # For CUDA 11.8
+   pip install torch==2.1.0+cu118 torchvision==0.16.0+cu118 --index-url https://download.pytorch.org/whl/cu118
+   
+   # For CUDA 12.1
+   pip install torch==2.1.0+cu121 torchvision==0.16.0+cu121 --index-url https://download.pytorch.org/whl/cu121
+   ```
+
+#### macOS (Apple Silicon/M1/M2/M3)
+
+For Apple Silicon Macs, PyTorch uses MPS (Metal Performance Shaders) instead of CUDA:
+
+1. **Install PyTorch with MPS support**:
+   ```
+   pip install torch torchvision
+   ```
+
+2. **Verify installation**:
+   ```python
+   import torch
+   print(f"PyTorch version: {torch.__version__}")
+   print(f"MPS available: {torch.backends.mps.is_available()}")
+   ```
+
+### ONNX Runtime for Performance Optimization
+
+ONNX Runtime can significantly improve inference speed for the image generation models:
+
+#### Installing ONNX Runtime
+
+1. **Basic Installation** (CPU only):
+   ```
+   pip install onnxruntime
+   ```
+
+2. **GPU-accelerated Installation** (NVIDIA GPUs):
+   ```
+   pip install onnxruntime-gpu
+   ```
+
+3. **For Apple Silicon** (M1/M2/M3):
+   ```
+   pip install onnxruntime-silicon
+   ```
+
+#### Verifying Your Installation
+
+To verify that GPU acceleration is working properly:
+
+```python
+import torch
+print(f"CUDA available: {torch.cuda.is_available()}")
+if torch.cuda.is_available():
+    print(f"GPU device name: {torch.cuda.get_device_name(0)}")
+    print(f"GPU memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
+```
+
+### Troubleshooting GPU Acceleration
+
+- **"CUDA out of memory" errors**: Try reducing image dimensions or batch size in the Image Creator settings
+- **Slow performance despite GPU**: Ensure you're using the correct CUDA version matching your PyTorch installation
+- **Image generation fails**:
+  - Check if the model is properly loaded with `torch.cuda.is_available()`
+  - Try clearing CUDA cache: add `torch.cuda.empty_cache()` before generation
+  - Reduce model complexity or generation steps
+
+### Offline Mode Considerations
+
+Little Geeky is designed to work offline, but setting up GPU acceleration typically requires internet access during installation. Once installed, all GPU acceleration features work fully offline.
+
+For users in environments with limited or no internet access:
+- Download all required packages on a computer with internet access
+- Use `pip download` to create a local package repository
+- Install from the local repository on the offline computer
+
+### Memory Optimization
+
+To optimize memory usage with GPU acceleration:
+
+1. **Enable attention slicing** (automatically enabled in the Image Creator)
+2. **Use half-precision (FP16)** for models (already implemented)
+3. **Clear CUDA cache** between generations (implemented in the "Clear Memory" button)
+4. **Adjust batch size** to 1 for larger images (default setting)
+5. **Monitor GPU memory** using Task Manager (Windows), nvidia-smi (Linux), or Activity Monitor (macOS)
+
+By following these setup instructions, Little Geeky's Image Creator will utilize your GPU for faster image generation, providing a smoother experience for young learners exploring their creativity.
+
 #### 3. First-time Setup
 
 When launching Little Geeky for the first time:
