@@ -61,16 +61,8 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo Upgrading pip...
-%PYTHON_CMD% -m pip install --upgrade pip
-if %errorlevel% neq 0 (
-    echo Failed to upgrade pip.
-    pause
-    exit /b 1
-)
-
 echo Installing the necessary requirements...
-pip install -r requirements.txt
+pip install --only-binary :all: -r requirements.txt
 if %errorlevel% neq 0 (
     echo Failed to install requirements.
     pause
