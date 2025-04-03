@@ -1,138 +1,199 @@
 # Little Geeky's Learning Adventure
 
+<div align="center">
+  <img src="docs/images/banner.png" alt="Little Geeky's Learning Adventure" width="800"/>
+</div>
 
+<p align="center">
+  <b>An interactive educational platform designed for elementary school children (grades 1-6)</b><br>
+  <i>Combining AI technologies with research-backed educational methodologies</i>
+</p>
 
-<img width="600" alt="reading" src="https://github.com/user-attachments/assets/d956b3f9-8a38-493d-85bb-9f667493c854" />
-<img width="600" alt="math" src="https://github.com/user-attachments/assets/d70aa3e4-fc06-4671-8fa8-f8233b32ac35" />
-<img width="600" alt="typing" src="https://github.com/user-attachments/assets/de10815e-1cb6-4b9f-864a-a6d0a0ff27e1" />
-<img width="600" alt="image-creator" src="https://github.com/user-attachments/assets/851621d3-caae-4aff-ba1e-398fbb3095a1" />
-
-
-
-
-
+<div align="center">
+  <img src="docs/images/reading_tab.png" alt="Reading Tab" width="400"/>
+  <img src="docs/images/math_tab.png" alt="Math Tab" width="400"/>
+  <img src="docs/images/typing_tab.png" alt="Typing Tab" width="400"/>
+  <img src="docs/images/image_creator_tab.png" alt="Image Creator Tab" width="400"/>
+</div>
 
 > ⚠️ **IMPORTANT SAFETY NOTICE** ⚠️
 > 
-> The Image Creator feature does not currently implement NSFW filtering. This feature is planned but not yet integrated.
-> Adult supervision is strongly recommended when children use the Image Creator.
-> This module is still in development - consider this a stable beta version that requires further safety enhancements.
+> **PARENTAL/ADULT SUPERVISION IS REQUIRED**  
+> 
+> Little Geeky's Learning Adventure is designed as an **attended learning tool**. Adults should actively monitor and engage with children during its use. This is particularly important for features like the Image Creator, which currently does not implement NSFW filtering.
+>
+> The platform is meant to be a collaborative learning experience between adults and children, not a substitute for adult guidance and supervision.
+
+## Table of Contents
+
+- [About](#about)
+- [Features](#features)
+- [Educational Approach](#educational-approach)
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Windows Installation](#windows-installation)
+  - [macOS & Linux Installation](#macos--linux-installation)
+  - [GPU Acceleration Setup](#gpu-acceleration-setup)
+- [Usage Guide](#usage-guide)
+  - [Reading Tab](#reading-tab)
+  - [Math Tab](#math-tab)
+  - [Typing Tab](#typing-tab)
+  - [Image Creator Tab](#image-creator-tab)
+  - [Achievements Tab](#achievements-tab)
+  - [Settings Tab](#settings-tab)
+- [Troubleshooting](#troubleshooting)
+- [Future Development](#future-development)
+- [Technical Details](#technical-details)
+- [License](#license)
 
 ## About
 
 Little Geeky's Learning Adventure is an interactive educational platform designed to make learning engaging and fun for elementary school children (grades 1-6). This application combines cutting-edge AI technologies with research-backed educational methodologies to create a supportive, adaptive learning environment.
 
-Developed as a passion project by a single developer, Little Geeky represents countless hours of development, research, and testing to create a tool that can help children develop crucial skills in reading, mathematics, typing, and now creative image generation.
+Developed as a passion project by a single developer, Little Geeky represents countless hours of development, research, and testing to create a tool that can help children develop crucial skills in reading, mathematics, typing, and creative expression through image generation.
+
+**Note:** This application is currently optimized for Windows users, though it can run on macOS and Linux with additional configuration.
 
 ## Features
 
 - **AI-Powered Learning**: Leverages local large language models (via Ollama) to provide personalized, contextually relevant educational content
-- **Multi-Modal Learning**: Supports text, audio, image-based learning, and creative image generation experiences
+- **Multi-Modal Learning**: Supports text, audio, image-based learning experiences
 - **Voice Interaction**: High-quality text-to-speech capabilities bring content to life
 - **Achievement System**: Motivates learners with achievement tracking and progress visualization
 - **Customizable Experience**: Settings for voice, speed, theme, and more
 - **Educational Focus Areas**: Reading comprehension, mathematics, typing skills, and creative image creation
+- **Offline Functionality**: Works without internet connection after initial setup
 
-## New! Image Creator
+## Educational Approach
 
-The application now includes an Image Creator feature:
+Little Geeky's Learning Adventure is built upon several well-established educational methodologies and principles:
 
-> ⚠️ **Safety Notice**: Adult supervision required. No content filtering system is currently implemented.
+### 1. Personalized Learning
 
-- **Create Images from Text**: Generate custom images based on text descriptions
-- **Customization Options**: Adjust settings like image size, generation steps, and guidance scale
-- **Style Templates**: Quick access to different artistic styles like Cartoon, Watercolor, 3D Render, and Pixel Art
-- **Image Saving**: Save your generated images to reuse in educational activities
-- **Transparent Background Option**: Create images with transparent backgrounds for use in other applications
-- **Safety Considerations**: This feature is in beta. Always supervise children during use, as content filtering is still in development
+The platform adapts to each child's abilities and interests through AI-powered content generation. This personalization helps maintain engagement and provides an appropriate level of challenge for each learner, following Vygotsky's Zone of Proximal Development theory.
+
+### 2. Multi-Modal Learning
+
+By engaging multiple senses through text, audio, and visual elements, the platform caters to different learning styles (visual, auditory, kinesthetic). Research indicates that multi-modal approaches enhance comprehension and retention by creating diverse neural pathways for information processing.
+
+### 3. Growth Mindset Development
+
+The achievement system is designed to reward effort and progress rather than just final outcomes, encouraging a growth mindset as described by Carol Dweck. Children learn that abilities can be developed through dedication and hard work.
+
+### 4. Scaffolded Learning
+
+Each activity provides appropriate support and guidance, gradually fading as the child demonstrates mastery. This scaffolded approach helps learners build confidence and independence over time.
+
+### 5. Inquiry-Based Learning
+
+Many activities encourage exploration and discovery, allowing children to construct their own understanding rather than passively receiving information. This constructivist approach promotes deeper learning and critical thinking skills.
+
+### 6. Immediate Feedback
+
+The platform provides instant feedback on activities, helping children understand their progress and make necessary adjustments. This feedback loop accelerates learning and reduces frustration.
+
+### 7. Creative Expression
+
+Through the Image Creator and upcoming Book Maker, children can express their ideas visually and narratively, developing creative thinking and communication skills.
+
+### 8. Parental Involvement
+
+The platform is designed for collaborative use, encouraging parents to engage with their children's learning, ask questions, and extend activities beyond the screen - an approach supported by extensive research on parental involvement in education.
 
 ## Installation
 
 ### Prerequisites
 
+- **Windows 10/11**: Primary supported platform (64-bit)
 - **Python 3.8+**: Required for the application's core functionality
 - **Ollama**: To run local LLMs (Large Language Models)
-- **Windows, macOS, or Linux**: Supported operating systems
 - **Stable Diffusion Models**: Required for the Image Creator feature
+- **Minimum Hardware**:
+  - CPU: Dual-core processor
+  - RAM: 8GB minimum (16GB recommended)
+  - Storage: 1GB for the application + space for models (models range from 1GB to 8GB each)
+  - GPU: Optional but recommended for faster image generation
 
-### Detailed Installation Steps
+### Windows Installation
 
-#### 1. Setting Up Ollama (Required for AI Features)
+1. **Install Python 3.8 or newer**
+   - Download from [python.org](https://www.python.org/downloads/)
+   - Ensure you check "Add Python to PATH" during installation
 
-Little Geeky uses Ollama for AI capabilities. To install Ollama:
+2. **Install Ollama**
+   - Download and install from [Ollama's official website](https://ollama.ai/download)
+   - Once installed, keep Ollama running in the background while using Little Geeky
 
-- **Windows/macOS/Linux**: Download and install from [Ollama's official website](https://ollama.ai/download)
-- Once installed, run Ollama and keep it running in the background while using Little Geeky
+3. **Clone or Download Little Geeky**
+   ```
+   git clone https://github.com/GeekyGhost/Little-Geeky-s-Learning-UI.git
+   cd Little-Geeky-s-Learning-UI
+   ```
+   Alternatively, download the ZIP file from GitHub and extract it
 
-#### 2. Installing Little Geeky
+4. **Run the Installation Script**
+   - Double-click `run.bat` or run it from the command line
+   - This script will create a virtual environment and install all dependencies
 
-**Option 1: Using the provided setup script**
+5. **Download Required Models in Ollama**
+   - Open Command Prompt and run:
+     ```
+     ollama pull llama3
+     ollama pull llava
+     ```
 
-1. Clone the repository or download the ZIP file
+6. **Set Up Image Creator Models**
+   - Create a `Checkpoints` folder in the application directory if it doesn't already exist
+   - Download the GeekyGhost LCM model from [Civitai](https://civitai.com/models/476202/geekyghost-lcm)
+   - Place the downloaded `.safetensors` file in the `Checkpoints` folder
+
+7. **Launch the Application**
+   - Run `python main.py` from the command line in the application directory or
+   - Double-click `run.bat` again to launch the application
+
+### macOS & Linux Installation
+
+1. **Install Python 3.8 or newer**
+   - macOS: Use Homebrew: `brew install python3`
+   - Linux: Use your distribution's package manager, e.g., `sudo apt install python3 python3-pip`
+
+2. **Install Ollama**
+   - Download and install from [Ollama's website](https://ollama.ai/download)
+   - Follow the platform-specific instructions
+
+3. **Clone the Repository**
    ```
    git clone https://github.com/GeekyGhost/Little-Geeky-s-Learning-UI.git
    cd Little-Geeky-s-Learning-UI
    ```
 
-2. Run the setup script:
-   - **Windows**: Double-click `run.bat` or run it from the command line
-   - **macOS/Linux**: Make the script executable and run it
-     ```
-     chmod +x run.sh
-     ./run.sh
-     ```
-
-**Option 2: Manual installation**
-
-1. Clone the repository
+4. **Run the Installation Script**
    ```
-   git clone https://github.com/GeekyGhost/Little-Geeky-s-Learning-UI.git
-   cd Little-Geeky-s-Learning-UI
+   chmod +x run.sh
+   ./run.sh
    ```
 
-2. Create and activate a virtual environment:
-   ```
-   python -m venv venv
-   
-   # Windows
-   venv\Scripts\activate
-   
-   # macOS/Linux
-   source venv/bin/activate
-   ```
+5. **Download Required Models**
+   - Same as Windows instructions above
 
-3. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+6. **Additional Requirements for Linux**
+   - Install additional audio libraries: `sudo apt-get install libsndfile1`
 
-4. Launch the application:
-   ```
-   python main.py
-   ```
+**Note**: While the application can run on macOS and Linux, it has been primarily tested and optimized for Windows. Some features may require additional configuration on other platforms.
 
-### New Additional Install Instructions
+### GPU Acceleration Setup
 
-## GPU Acceleration Setup
+GPU acceleration can significantly improve performance, especially for the Image Creator feature.
 
-Little Geeky's Learning Adventure can leverage GPU acceleration to significantly improve performance, especially for the Image Creator feature. This section provides detailed instructions for setting up CUDA and ONNX Runtime support.
+#### For NVIDIA GPUs:
 
-### CUDA Setup for NVIDIA GPUs
+1. **Install the latest NVIDIA drivers** from the [official website](https://www.nvidia.com/Download/index.aspx)
 
-To enable GPU acceleration with NVIDIA graphics cards:
-
-#### Windows
-
-1. **Check GPU Compatibility**:
-   - Ensure you have a CUDA-capable NVIDIA GPU (GTX 1000 series or newer recommended)
-   - Check your GPU model with: `nvidia-smi` in Command Prompt
-
-2. **Install CUDA Toolkit**:
-   - Download the CUDA Toolkit 11.8 or 12.1 from [NVIDIA's website](https://developer.nvidia.com/cuda-downloads)
+2. **Install CUDA Toolkit**
+   - Download CUDA 11.8 or 12.1 from [NVIDIA's website](https://developer.nvidia.com/cuda-downloads)
    - Follow the installation wizard (Express Installation recommended)
-   - Restart your computer after installation
 
-3. **Install PyTorch with CUDA support**:
+3. **Install PyTorch with CUDA support**
    ```
    # For CUDA 11.8
    pip install torch==2.1.0+cu118 torchvision==0.16.0+cu118 --index-url https://download.pytorch.org/whl/cu118
@@ -141,233 +202,162 @@ To enable GPU acceleration with NVIDIA graphics cards:
    pip install torch==2.1.0+cu121 torchvision==0.16.0+cu121 --index-url https://download.pytorch.org/whl/cu121
    ```
 
-#### Linux/Ubuntu
-
-1. **Check GPU Compatibility**:
-   ```
-   nvidia-smi
-   ```
-
-2. **Install CUDA Dependencies**:
-   ```
-   sudo apt-get update
-   sudo apt-get install -y build-essential
-   sudo apt-get install -y nvidia-cuda-toolkit
+4. **Verify Installation**
+   ```python
+   import torch
+   print(f"CUDA available: {torch.cuda.is_available()}")
+   if torch.cuda.is_available():
+       print(f"GPU device name: {torch.cuda.get_device_name(0)}")
    ```
 
-3. **Install PyTorch with CUDA support**:
-   ```
-   # For CUDA 11.8
-   pip install torch==2.1.0+cu118 torchvision==0.16.0+cu118 --index-url https://download.pytorch.org/whl/cu118
-   
-   # For CUDA 12.1
-   pip install torch==2.1.0+cu121 torchvision==0.16.0+cu121 --index-url https://download.pytorch.org/whl/cu121
-   ```
+#### For AMD GPUs:
 
-#### macOS (Apple Silicon/M1/M2/M3)
+AMD GPU support is limited for the deep learning libraries used in this application. We recommend using CPU mode for now.
 
-For Apple Silicon Macs, PyTorch uses MPS (Metal Performance Shaders) instead of CUDA:
+#### For Apple Silicon (M1/M2/M3):
 
-1. **Install PyTorch with MPS support**:
+1. **Install PyTorch with MPS support**
    ```
    pip install torch torchvision
    ```
 
-2. **Verify installation**:
+2. **Verify installation**
    ```python
    import torch
-   print(f"PyTorch version: {torch.__version__}")
    print(f"MPS available: {torch.backends.mps.is_available()}")
    ```
 
-### ONNX Runtime for Performance Optimization
+## Usage Guide
 
-ONNX Runtime can significantly improve inference speed for the image generation models:
-
-#### Installing ONNX Runtime
-
-1. **Basic Installation** (CPU only):
-   ```
-   pip install onnxruntime
-   ```
-
-2. **GPU-accelerated Installation** (NVIDIA GPUs):
-   ```
-   pip install onnxruntime-gpu
-   ```
-
-3. **For Apple Silicon** (M1/M2/M3):
-   ```
-   pip install onnxruntime-silicon
-   ```
-
-#### Verifying Your Installation
-
-To verify that GPU acceleration is working properly:
-
-```python
-import torch
-print(f"CUDA available: {torch.cuda.is_available()}")
-if torch.cuda.is_available():
-    print(f"GPU device name: {torch.cuda.get_device_name(0)}")
-    print(f"GPU memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
-```
-
-### Troubleshooting GPU Acceleration
-
-- **"CUDA out of memory" errors**: Try reducing image dimensions or batch size in the Image Creator settings
-- **Slow performance despite GPU**: Ensure you're using the correct CUDA version matching your PyTorch installation
-- **Image generation fails**:
-  - Check if the model is properly loaded with `torch.cuda.is_available()`
-  - Try clearing CUDA cache: add `torch.cuda.empty_cache()` before generation
-  - Reduce model complexity or generation steps
-
-### Offline Mode Considerations
-
-Little Geeky is designed to work offline, but setting up GPU acceleration typically requires internet access during installation. Once installed, all GPU acceleration features work fully offline.
-
-For users in environments with limited or no internet access:
-- Download all required packages on a computer with internet access
-- Use `pip download` to create a local package repository
-- Install from the local repository on the offline computer
-
-### Memory Optimization
-
-To optimize memory usage with GPU acceleration:
-
-1. **Enable attention slicing** (automatically enabled in the Image Creator)
-2. **Use half-precision (FP16)** for models (already implemented)
-3. **Clear CUDA cache** between generations (implemented in the "Clear Memory" button)
-4. **Adjust batch size** to 1 for larger images (default setting)
-5. **Monitor GPU memory** using Task Manager (Windows), nvidia-smi (Linux), or Activity Monitor (macOS)
-
-By following these setup instructions, Little Geeky's Image Creator will utilize your GPU for faster image generation, providing a smoother experience for young learners exploring their creativity.
-
-#### 3. First-time Setup
+### First Launch
 
 When launching Little Geeky for the first time:
 
 1. The application will create necessary directories for storing user data and models
-2. For the speech synthesis to work properly:
-   - **Kokoro TTS**: Will be installed with the requirements, but may need additional dependencies:
-     - Windows: Visual C++ Redistributable might be required
-     - Linux: Additional audio libraries might be needed (`libsndfile1`)
-   - **System voices**: Will use your OS's available voices
+2. Enter a username to track progress and achievements
+3. Navigate through the tabs to access different learning activities
 
-#### 4. Model Setup in Ollama
+### Reading Tab
 
-For optimal performance, download these models in Ollama:
+The Reading Tab focuses on reading comprehension and document analysis:
 
-1. Open a terminal/command prompt and run:
-   ```
-   # Basic model for text generation (choose one)
-   ollama pull llama3
-   
-   # Vision model for document analysis (choose one)
-   ollama pull llava
-   ```
+- **Document Upload**: Upload PDFs or images for reading practice
+- **Text Analysis**: AI assistance in understanding complex text
+- **Reading Exercises**: Practice comprehension with AI-generated questions
+- **Voice Narration**: Text-to-speech capabilities for reading aloud
 
-2. Within Little Geeky, go to the Settings tab → Model Management to set up these models for different tasks
+**Parent Guidance**: Help your child select appropriate reading materials. Use the AI-generated questions as conversation starters. Encourage your child to summarize what they've read in their own words.
 
-#### 5. Installing Stable Diffusion Models for Image Creator
+### Math Tab
 
-To use the Image Creator feature, you need to download Stable Diffusion models:
+The Math Tab provides adaptive mathematics exercises:
 
-1. Create a `Checkpoints` folder in the application directory if it doesn't already exist
-2. Download the GeekyGhost LCM model from [Civitai](https://civitai.com/models/476202/geekyghost-lcm)
-3. Place the downloaded model file in the `Checkpoints` folder
-4. The model will be automatically detected when you use the Image Creator tab
+- **Customizable Difficulty**: Adjust math problems based on grade level and ability
+- **Problem Generation**: AI creates diverse math problems
+- **Visual Aids**: Visual representations of math concepts
+- **Interactive Calculator**: Built-in calculator for checking work
 
-#### 6. Directory Structure
+**Parent Guidance**: Begin with problems slightly below your child's current level to build confidence, then gradually increase difficulty. Ask your child to explain their problem-solving approach rather than focusing solely on the correct answer.
 
-After installation, these directories will be created:
+### Typing Tab
 
-- `data/` - Stores user progress and settings
-- `logs/` - Contains application logs for troubleshooting
-- `models/` - Used for caching model information
-- `temp/` - Temporary files for document processing
-- `assets/images/` - Store generated images
-- `Checkpoints/` - Storage for Stable Diffusion models
+The Typing Tab helps develop keyboard skills:
 
-### System Requirements
+- **Typing Exercises**: Progressive typing challenges
+- **Speed & Accuracy Tracking**: Monitors typing performance
+- **Custom Content**: Create personalized typing exercises
+- **Ergonomic Tips**: Guidance on proper hand positioning
 
-- **Minimum**:
-  - CPU: Dual-core processor
-  - RAM: 4GB (8GB recommended if using large AI models)
-  - Storage: 500MB for the application + space for models (models can range from 1GB to 8GB each)
-  - Network: Not required after installation
-  
-- **Recommended** (for optimal performance):
-  - CPU: Quad-core processor
-  - RAM: 16GB or more
-  - GPU: NVIDIA GPU with CUDA support (for faster AI processing and image generation)
-  - Storage: SSD with at least 20GB free space
+**Parent Guidance**: Ensure proper posture and hand positioning. Start with short, frequent sessions rather than long practice periods. Emphasize accuracy over speed initially.
 
-### Troubleshooting
+### Image Creator Tab
 
-- **Application doesn't start**:
-  - Check Python version (`python --version`)
-  - Ensure virtual environment is activated
-  - Look at logs in the `logs/` directory
+> ⚠️ **SAFETY NOTICE**: Adult supervision required. No content filtering system is currently implemented.
 
-- **No AI responses**:
-  - Verify Ollama is running in the background
-  - Check models are downloaded in Ollama
-  - Configure models in Settings tab
+The Image Creator allows children to transform text descriptions into images:
 
-- **No audio output**:
-  - Check system audio settings
-  - Ensure audio libraries are installed
-  - Try switching to system voices in the settings
-
-- **Image Creator doesn't work**:
-  - Verify you have models in the `Checkpoints` folder
-  - Check for GPU memory issues if you have a GPU
-  - Try lowering image dimensions or steps in the UI
-
-- **For log file access**:
-  - Look in `logs/little_geeky.log` for detailed error messages
-
-## Interface & Navigation
-
-Little Geeky features a tab-based interface with the following main areas:
-
-- **Reading Tab**: For reading practice, document analysis, and comprehension
-- **Math Tab**: For mathematics exercises tailored to different grade levels
-- **Typing Tab**: For keyboard skills development and practice
-- **Image Creator Tab**: For generating custom images from text descriptions
-- **Achievements Tab**: For tracking learning progress and accomplishments
-- **Settings Tab**: For customizing the learning experience
-
-## Image Creator Guide
-
-The Image Creator tab provides a creative environment where children can turn their ideas into images.
-
-> ⚠️ **SAFETY INFORMATION**: The current implementation does not include content filtering systems. Adult supervision is required. This feature is still in development and should be considered a beta version.
-
-**Features:**
-- **Text-to-Image Generation**: Create images from text descriptions
-- **Negative Prompt**: Specify elements to avoid in the generated image
-- **Generation Options**: Control image size, quality, and style
+- **Text-to-Image**: Generate images from descriptions
 - **Style Templates**: Quick selection of artistic styles
-- **Image Saving**: Save creations to the assets folder
-- **Safeguards**: While technical safety features are being developed, use child-friendly prompts and templates
+- **Customization Options**: Adjust image parameters
+- **Transparent Backgrounds**: Create images with transparent backgrounds
 
-**How to Use:**
-1. Enter a description of the image you want to create in the text field
-2. Optionally, add negative prompts to avoid certain elements
-3. Select the generation speed (LCM for faster results, Standard for higher quality)
-4. Adjust steps, guidance scale, and dimensions as needed
-5. Choose a style template or customize settings in the Advanced section
-6. Click "Generate Image" to create your image
-7. Use "Save to Assets" to save your creation
+**Parent Guidance**: Directly supervise this feature at all times. Help frame appropriate prompts and discuss the generated images. Use this as an opportunity to talk about digital creativity and how AI interprets text.
 
-**Tips for Better Results:**
-- Be specific and detailed in your descriptions
-- Try different style templates for varied results
-- For better quality, increase the steps and guidance scale (with Standard mode)
-- For faster generation, use LCM mode with fewer steps
-- Use negative prompts to avoid unwanted elements
+### Achievements Tab
+
+The Achievements Tab tracks learning progress:
+
+- **Progress Visualization**: Visual representation of learning journey
+- **Skill Tracking**: Monitors development across different areas
+- **Achievement Unlocking**: Milestone recognition to motivate learning
+- **Statistics**: Detailed stats on usage and improvement
+
+**Parent Guidance**: Celebrate achievements together, focusing on effort rather than just outcomes. Use the statistics to identify strengths and areas that might need more attention.
+
+### Settings Tab
+
+The Settings Tab allows customization of the learning experience:
+
+- **Voice Selection**: Choose from multiple voice options
+- **Theme Customization**: Adjust visual appearance
+- **Model Management**: Configure AI models for different tasks
+- **Accessibility Options**: Adjust text size and speed
+
+**Parent Guidance**: Involve your child in customizing their learning environment. This provides a sense of ownership and can increase engagement.
+
+## Troubleshooting
+
+### Application Doesn't Start
+
+- Verify Python is correctly installed: `python --version`
+- Ensure the virtual environment is activated
+- Check logs in the `logs/` directory for specific errors
+
+### No AI Responses
+
+- Verify Ollama is running in the background
+- Check that models are downloaded in Ollama
+- Configure models in the Settings tab
+
+### No Audio Output
+
+- Check system audio settings
+- Ensure audio libraries are installed
+- Try switching to system voices in the settings
+
+### Image Creator Doesn't Work
+
+- Verify you have models in the `Checkpoints` folder
+- Check for GPU memory issues if you have a GPU
+- Try lowering image dimensions or steps in the UI
+
+### Performance Issues
+
+- Close other resource-intensive applications
+- Reduce model complexity in Settings
+- Consider upgrading hardware for optimal experience
+
+For detailed error information, check the log file at `logs/little_geeky.log`.
+
+## Future Development
+
+Little Geeky's Learning Adventure is an ongoing project with several planned enhancements:
+
+### Coming Soon
+
+- **Content Safety Filters**: Implementation of NSFW filtering for the Image Creator
+- **Programming Tab**: Introduction to coding concepts with integrated Phaser game engine
+- **Little Geeky Book Maker**: A new tab allowing children to create illustrated short books using the Image Generator and LLM
+- **Child-Safe Prompt Templates**: Pre-vetted prompt templates designed specifically for educational content
+
+### Future Roadmap
+
+- **Additional Subject Areas**: Science, Social Studies, and more
+- **More Interactive Exercises**: Enhanced gamification elements
+- **Expanded Accessibility Features**: Making education inclusive for all learners
+- **Animation Capabilities**: Bringing generated images to life with simple animations
+- **Integration with Additional Educational Resources**: Expanding the knowledge base
+- **Cross-Platform Optimization**: Better support for macOS and Linux
 
 ## Technical Details
 
@@ -382,29 +372,18 @@ The application leverages Ollama to run local LLMs, providing:
 - Educational content adaptation
 - Image generation from text descriptions
 
-Models can be configured for different tasks in the Settings tab, allowing optimization for specific educational purposes.
-
 ### Image Generation Technology
 
 The Image Creator uses:
 - **Stable Diffusion**: State-of-the-art text-to-image generation
 - **LCM (Latent Consistency Model)**: For faster image generation
 - **Memory Optimization**: Techniques to improve performance on limited hardware
-- **Style Templates**: Pre-configured prompts for consistent artistic styles
-- **Safety Development Roadmap**: Content filtering and guardrails planned for future updates
 
 ### Voice Technology
 
 Little Geeky incorporates two text-to-speech systems:
-
 1. **System Voices**: Using pyttsx3 to access operating system voices
 2. **Kokoro TTS**: High-quality, efficient neural TTS with multiple voices
-
-The voice system includes:
-- Voice caching for improved performance
-- Automatic SSML tag handling
-- Cross-platform compatibility
-- Efficient audio processing with numpy
 
 ### UI Framework
 
@@ -414,38 +393,15 @@ Built with Gradio, the application features:
 - Tab-based navigation for intuitive use
 - Unified styling system with theme support
 
-### Educational Design
-
-The application incorporates research-backed educational approaches:
-- Age-appropriate content tailored to developmental levels
-- Support for multiple learning styles (visual, auditory, kinesthetic)
-- Growth mindset encouragement
-- Positive reinforcement systems
-- Creative expression through image generation
-
-## Future Development
-
-Little Geeky's Learning Adventure is an ongoing project with plans for future enhancements:
-
-- **Content Safety Filters**: Implementation of NSFW filtering for the Image Creator (high priority)
-- **Child-Safe Prompt Templates**: Pre-vetted prompt templates designed specifically for educational content
-- **Additional subject areas**: Science, Social Studies and more
-- **More interactive exercises and games**: Enhanced gamification elements
-- **Expanded accessibility features**: Making education inclusive for all learners
-- **Animation capabilities**: Bringing generated images to life with simple animations
-- **Integration with additional educational resources**: Expanding the knowledge base
-
-## Licensing
+## License
 
 This project is released under the MIT License, which allows for free use, modification, and distribution with minimal restrictions. For the complete terms and conditions, please refer to the LICENSE file included in this repository.
-Important Note: While this project itself uses the MIT License, it incorporates various third-party dependencies and models that may be governed by different licensing terms. Users are responsible for reviewing and complying with all applicable licenses for each component used.
 
-Please consult the documentation of individual dependencies and models to ensure compliance with their specific licensing requirements.
-
-## Contact
-
-For questions, suggestions, or collaboration opportunities, please open an issue in the GitHub repository.
+**Important Note**: While this project itself uses the MIT License, it incorporates various third-party dependencies and models that may be governed by different licensing terms. Users are responsible for reviewing and complying with all applicable licenses for each component used.
 
 ---
 
-Little Geeky's Learning Adventure - Making learning an adventure, one skill at a time.
+<p align="center">
+  <b>Little Geeky's Learning Adventure</b><br>
+  <i>Making learning an adventure, one skill at a time.</i>
+</p>
