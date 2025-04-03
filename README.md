@@ -1,20 +1,9 @@
 # Little Geeky's Learning Adventure
 
-<div align="center">
-  <img src="docs/images/banner.png" alt="Little Geeky's Learning Adventure" width="800"/>
-</div>
-
-<p align="center">
-  <b>An interactive educational platform designed for elementary school children (grades 1-6)</b><br>
-  <i>Combining AI technologies with research-backed educational methodologies</i>
-</p>
-
-<div align="center">
-  <img src="docs/images/reading_tab.png" alt="Reading Tab" width="400"/>
-  <img src="docs/images/math_tab.png" alt="Math Tab" width="400"/>
-  <img src="docs/images/typing_tab.png" alt="Typing Tab" width="400"/>
-  <img src="docs/images/image_creator_tab.png" alt="Image Creator Tab" width="400"/>
-</div>
+<img width="600" alt="reading" src="https://github.com/user-attachments/assets/d956b3f9-8a38-493d-85bb-9f667493c854" />
+<img width="600" alt="math" src="https://github.com/user-attachments/assets/d70aa3e4-fc06-4671-8fa8-f8233b32ac35" />
+<img width="600" alt="typing" src="https://github.com/user-attachments/assets/de10815e-1cb6-4b9f-864a-a6d0a0ff27e1" />
+<img width="600" alt="image-creator" src="https://github.com/user-attachments/assets/851621d3-caae-4aff-ba1e-398fbb3095a1" />
 
 > ⚠️ **IMPORTANT SAFETY NOTICE** ⚠️
 > 
