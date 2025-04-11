@@ -176,9 +176,9 @@ class ImageTab:
             # Update UI based on model type
             def update_model_settings(model_type):
                 if model_type == "LCM (Fast)":
-                    return gr.update(value=4, maximum=8), gr.update(value=1.5, maximum=3.0), gr.update(value="lcm"), gr.update(value="sgm_uniform")
+                    return gr.update(value=4, maximum=50), gr.update(value=1.5, maximum=3.0), gr.update(value="lcm"), gr.update(value="sgm_uniform")
                 else:
-                    return gr.update(value=30, maximum=50), gr.update(value=7.5, maximum=15.0), gr.update(value="Euler a"), gr.update(value="karras")
+                    return gr.update(value=20, maximum=50), gr.update(value=1.5, maximum=15.0), gr.update(value="lcm"), gr.update(value="sgm_uniform")
             
             # Add explicit memory cleanup function
             def clean_memory():
