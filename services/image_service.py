@@ -23,7 +23,7 @@ os.environ["HF_DATASETS_OFFLINE"] = "1"
 
 # Monkey patch urllib3 to block any GitHub requests
 def patch_urllib3():
-    """Patch urllib3 to block any requests to GitHub"""
+    """Patch urllib3 to selectively block requests"""
     try:
         import urllib3.connectionpool
         from urllib3.exceptions import MaxRetryError
@@ -31,21 +31,31 @@ def patch_urllib3():
         # Store the original function
         original_urlopen = urllib3.connectionpool.HTTPConnectionPool.urlopen
         
-        # Define a patched version
+        # Define a patched version that allows spaCy requests
         def patched_urlopen(self, method, url, **kw):
-            # Block GitHub requests completely
-            if "githubusercontent.com" in self.host:
+            # Only block HuggingFace and certain GitHub requests
+            # Allow spaCy compatibility requests which are needed by Kokoro
+            if "huggingface.co" in self.host:
+                logger.info(f"Blocked request to {self.host} (offline mode)")
                 raise MaxRetryError(self, url, reason=f"Offline mode: blocked request to {self.host}")
+            elif "githubusercontent.com" in self.host:
+                # Always allow spaCy compatibility requests
+                if "/explosion/spacy-models/master/compatibility.json" in url:
+                    logger.info(f"Allowing spaCy compatibility request: {url}")
+                    return original_urlopen(self, method, url, **kw)
+                
+                # Block other GitHub content
+                logger.info(f"Blocked request to {self.host} (offline mode)")
+                raise MaxRetryError(self, url, reason=f"Offline mode: blocked request to {self.host}")
+            
+            # Allow all other requests
             return original_urlopen(self, method, url, **kw)
         
         # Apply the patch
         urllib3.connectionpool.HTTPConnectionPool.urlopen = patched_urlopen
-        logger.info("Patched urllib3 to block GitHub requests")
+        logger.info("Patched urllib3 to selectively block requests")
     except Exception as e:
         logger.warning(f"Could not patch urllib3: {e}")
-
-# Apply the patch immediately
-patch_urllib3()
 
 def ensure_config_file_exists(model_path):
     """Create a config file next to the model file"""
