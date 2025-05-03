@@ -192,7 +192,7 @@ class SettingsTab:
                                 with gr.Column(scale=3):
                                     model_name_download = gr.Textbox(
                                         label="Download Model",
-                                        placeholder="Enter model name (e.g., llama3.2)",
+                                        placeholder="Enter model name (e.g., llama3, gemma3, or paste 'ollama run model-name')",
                                         elem_classes="model-input"
                                     )
                                 
@@ -473,13 +473,19 @@ class SettingsTab:
                     logger.error(f"Error in refresh handler: {e}")
                     return f"Error refreshing models: {str(e)}", [], gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update()
 
-            # Simplified download function
+            # Simplified download function with preprocessing for model names
             async def download_model(model_name):
                 """Download a model without automatically updating UI"""
                 if not model_name:
                     return "Please enter a model name to download"
                 
                 try:
+                    # Preprocess model name to strip common prefixes
+                    original_name = model_name
+                    if "ollama run " in model_name:
+                        model_name = model_name.replace("ollama run ", "")
+                        logger.info(f"Removed 'ollama run' prefix from model name: {original_name} -> {model_name}")
+                    
                     # Use Ollama CLI to download model
                     process = await asyncio.create_subprocess_exec(
                         "ollama", "pull", model_name,
@@ -489,7 +495,10 @@ class SettingsTab:
                     stdout, stderr = await process.communicate()
                     
                     if process.returncode == 0:
-                        return f"Model {model_name} downloaded successfully! Use Refresh to update the model list."
+                        if original_name != model_name:
+                            return f"Processed '{original_name}' as '{model_name}' and downloaded successfully! Use Refresh to update the model list."
+                        else:
+                            return f"Model {model_name} downloaded successfully! Use Refresh to update the model list."
                     else:
                         return f"Failed to download model: {stderr.decode()}"
                 except Exception as e:
