@@ -12,6 +12,12 @@ class ModelManager:
     async def download_model(self, model_name: str) -> bool:
         """Download model from Ollama"""
         try:
+            # Preprocess model name to strip common prefixes
+            if "ollama run " in model_name:
+                original_name = model_name
+                model_name = model_name.replace("ollama run ", "")
+                logger.info(f"Removed 'ollama run' prefix from model name: {original_name} -> {model_name}")
+            
             process = await asyncio.create_subprocess_exec(
                 "ollama", "pull", model_name,
                 stdout=asyncio.subprocess.PIPE,
